@@ -47,6 +47,10 @@ define('COLORS', true);
  * File extensions to include
  */
 define('EXTENSION', '.php|.php5|.php4|.inc.php');
+/**
+ * Directory Names to omit from inclusion
+ */
+define('EXCLUDE_DIR', '.git|.svn');
 
 /**
  * Log
@@ -97,21 +101,23 @@ class Logger {
 
         // am I being verbose ??
         if (VERBOSE) {
-            switch($type) {
-                case Logger::ERROR:
-                    $message = "\033[1;31m".$message."\033[0m";
-                    break;
-                case Logger::INFO:
-                    $message = "\033[1;34m".$message."\033[0m";
-                    break;
-                case Logger::WARN:
-                    $message = "\033[1;33m".$message."\033[0m";
-                    break;
-                case Logger::TASK:
-                    $message = "\033[1;32m".$message."\033[0m";
-                    break;
-                default:
-                    break;
+            if (COLORS) {
+                switch($type) {
+                    case Logger::ERROR:
+                        $message = "\033[1;31m".$message."\033[0m";
+                        break;
+                    case Logger::INFO:
+                        $message = "\033[1;34m".$message."\033[0m";
+                        break;
+                    case Logger::WARN:
+                        $message = "\033[1;33m".$message."\033[0m";
+                        break;
+                    case Logger::TASK:
+                        $message = "\033[1;32m".$message."\033[0m";
+                        break;
+                    default:
+                        break;
+                }
             }
             echo sprintf("[%s] %s \n", date('Y-m-d h:i:s', time()), $message);
         }
@@ -374,7 +380,7 @@ class Compiler {
     {
         $this->_tokens = new Tokens();
 
-        warning("Docpx - The PHP 5.3 API Doctor");
+        warning("Docpx - The PHP 5.3 API Generator");
         info("---------------------------------");
         warning("Original author Nickolas Whiting http://www.nwhiting.com");
     }
@@ -403,7 +409,7 @@ class Compiler {
         $contents = new \DirectoryIterator($dir);
 
         foreach ($contents as $_file) {
-            if ($_file->isDot()) continue;
+            if ($_file->isDot() || $_file->isDir() && preg_match('['.EXCLUDE_DIR.']', $_file->getFileName())) continue;
 
             if ($_file->isDir() && RECURSIVE) {
                 $this->compile($_file->getPath().'/'.$_file->getFileName(), true);
@@ -418,4 +424,4 @@ class Compiler {
 }
 
 $compile = new Compiler();
-$compile->compile('');
+$compile->compile('../prggmr/');
