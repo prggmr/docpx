@@ -22,8 +22,31 @@ namespace docpx;
  * lightweight, fast and support all current version of PHP.
  */
 
-define('VERBOSE', 1);
-define('VALIDATE', 1);
+/**
+ * Set to true to output all activity
+ */
+define('VERBOSE', true);
+/**
+ * Set to true to enable syntax error checking of files before
+ * parsing the source.
+ *
+ * Disable to improve performance
+ */
+define('VALIDATE', false);
+/**
+ * Set to true to enable recursivly scanning directories for
+ * files
+ */
+define('RECURSIVE', true);
+/**
+ * Set to true to enable color output in the console based on the
+ * message type.
+ */
+define('COLORS', true);
+/**
+ * File extensions to include
+ */
+define('EXTENSION', '.php|.php5|.php4|.inc.php');
 
 /**
  * Log
@@ -50,6 +73,11 @@ class Logger {
     const WARN = 1003;
 
     /**
+     * INFO message
+     */
+    const INFO = 1004;
+
+    /**
      * Stack of all log messages.
      *
      * @var  array  Stack of all messages sent to the log
@@ -68,19 +96,54 @@ class Logger {
         );
 
         // am I being verbose ??
-        if (VERBOSE == 1) {
+        if (VERBOSE) {
+            switch($type) {
+                case Logger::ERROR:
+                    $message = "\033[1;31m".$message."\033[0m";
+                    break;
+                case Logger::INFO:
+                    $message = "\033[1;34m".$message."\033[0m";
+                    break;
+                case Logger::WARN:
+                    $message = "\033[1;33m".$message."\033[0m";
+                    break;
+                case Logger::TASK:
+                    $message = "\033[1;32m".$message."\033[0m";
+                    break;
+                default:
+                    break;
+            }
             echo sprintf("[%s] %s \n", date('Y-m-d h:i:s', time()), $message);
         }
 
+        //Logger::write();
+
         // kill the script
-        if ($type === Log::ERROR) die();
+        if ($type === Logger::ERROR) {
+            warning("Docpx halted due to compile error");
+            die();
+        }
     }
 
 }
 
-function log($message, $type = Logger::TASK) {
-    Logger::log($message, $type);
+function task($message) {
+    Logger::log($message, Logger::TASK);
 }
+
+function warning($message) {
+    Logger::log($message, Logger::WARN);
+}
+
+function error($message) {
+    Logger::log($message, Logger::ERROR);
+}
+
+function info($message) {
+    Logger::log($message, Logger::INFO);
+}
+
+
 
 /**
  * Node
@@ -126,41 +189,61 @@ class Tokens implements \Iterator, \Countable {
      *
      * @param  string  $file  PHP Source file to parse.
      */
-    public function __construct($file)
+    public function parse($file)
     {
         if (!file_exists($file)) {
-            log(sprintf(
+            error(sprintf(
                 'Failed to locate source file "%s"; halting compiler',
-                $file),
-                Log::ERROR);
+                $file));
         }
 
         if (VALIDATE) {
             exec('php -l '.escapeshellarg($file), $output, $result);
 
             if ($result != 0) {
-                log(sprintf(
+                error(sprintf(
                     'The file "%s" could not be parsed as it contains errors; halting compiler',
-                    $file),
-                    Log::ERROR);
+                    $file
+                ));
             }
+
+            task(
+                sprintf(
+                    'File "%s" contains no PHP Errors',
+                    $file
+                )
+            );
         }
 
         $source = file_get_contents($file);
         $tokens = token_get_all($source);
 
+        task(
+            sprintf(
+                'Parsing file "%s"',
+                $file
+            )
+        );
+
         foreach ($tokens as $_line => $_token) {
             if (is_array($_token)) {
                 try {
-                    $this->_tokens[$_line] = new Node($_token);
+                    $this->_tokens[] = new Node($_token);
                 } catch (NodeException $e) {
-                    log(sprintf(
+                    error(sprintf(
                         'Error encountered when generating nodes "%s"',
                         $e->getMessage()
-                    ), Log::ERROR);
+                    ));
                 }
             }
         }
+
+        task(
+            sprintf(
+                'File "%s" parsing complete',
+                $file
+            )
+        );
     }
 
     /**
@@ -287,4 +370,52 @@ class Parser {
  */
 class Compiler {
 
+    public function __construct()
+    {
+        $this->_tokens = new Tokens();
+
+        warning("Docpx - The PHP 5.3 API Doctor");
+        info("---------------------------------");
+        warning("Original author Nickolas Whiting http://www.nwhiting.com");
+    }
+
+    public function compile($dir, $skipable = false) {
+
+        if (!is_dir($dir)) {
+            if ($skipable) {
+                warning(sprintf(
+                    'Directory "%s" not found, omitting from the compiler'
+                , $dir));
+            } else {
+                error(sprintf(
+                    'Directory "%s" not found, not other directories to scan'
+                , $dir));
+            }
+        }
+
+        task(
+            sprintf(
+                'Scanning Directory "%s"',
+                $dir
+            )
+        );
+
+        $contents = new \DirectoryIterator($dir);
+
+        foreach ($contents as $_file) {
+            if ($_file->isDot()) continue;
+
+            if ($_file->isDir() && RECURSIVE) {
+                $this->compile($_file->getPath().'/'.$_file->getFileName(), true);
+            }
+
+            if (preg_match('['.EXTENSION.']', $_file->getFileName())) {
+                $this->_tokens->parse($_file->getPath().'/'.$_file->getFileName());
+            }
+        }
+    }
+
 }
+
+$compile = new Compiler();
+$compile->compile('');
