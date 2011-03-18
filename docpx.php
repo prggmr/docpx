@@ -37,7 +37,7 @@ define('VALIDATE', false);
  * Set to true to enable recursivly scanning directories for
  * files
  */
-define('RECURSIVE', true);
+define('RECURSIVE', false);
 /**
  * Set to true to enable color output in the console based on the
  * message type.
@@ -165,6 +165,19 @@ class Node {
         $this->_token = $token;
     }
 
+    public function getValue()
+    {
+        return $this->_token[1];
+    }
+
+    public function isNamespace() {
+        return $this->_token[0] === T_NAMESPACE;
+    }
+
+    public function isDocBlock()
+    {
+        return $this->_token[0] === T_DOC_COMMENT;
+    }
 }
 
 /**
@@ -376,6 +389,13 @@ class Parser {
  */
 class Compiler {
 
+    /**
+     * Path to the php source files
+     *
+     * @var  string  Path to the php files that will be parsed
+     */
+    public $path = null;
+
     public function __construct()
     {
         $this->_tokens = new Tokens();
@@ -385,43 +405,99 @@ class Compiler {
         warning("Original author Nickolas Whiting http://www.nwhiting.com");
     }
 
-    public function compile($dir, $skipable = false) {
+    public function compile($path) {
 
-        if (!is_dir($dir)) {
-            if ($skipable) {
-                warning(sprintf(
-                    'Directory "%s" not found, omitting from the compiler'
-                , $dir));
-            } else {
-                error(sprintf(
-                    'Directory "%s" not found, not other directories to scan'
-                , $dir));
+        $this->path = $path;
+
+        if (!is_dir($path)) {
+
+            if (is_file($path) && file_exists($path)) {
+                // REALLY??
+                goto single;
             }
+
+            error(sprintf(
+                'Directory "%s" not found, not other directories to scan'
+            , $path));
         }
 
-        task(
+        info(
             sprintf(
-                'Scanning Directory "%s"',
-                $dir
+                'Beginning Directory scan "%s"',
+                $path
             )
         );
 
-        $contents = new \DirectoryIterator($dir);
+        if (RECURSIVE) {
+            $directory = new \RecursiveDirectoryIterator($path);
+            $iterator = new \RecursiveIteratorIterator($directory);
+            $files = new \RegexIterator($iterator, '/^.+\\'.EXTENSION.'/i', \RecursiveRegexIterator::GET_MATCH);
+        } else {
+            $directory = new \DirectoryIterator($path);
+            $iterator = new \IteratorIterator($directory);
+            $files = new \RegexIterator($iterator, '/^.+\\'.EXTENSION.'$/i', \RegexIterator::GET_MATCH);
+        }
 
-        foreach ($contents as $_file) {
-            if ($_file->isDot() || $_file->isDir() && preg_match('['.EXCLUDE_DIR.']', $_file->getFileName())) continue;
 
-            if ($_file->isDir() && RECURSIVE) {
-                $this->compile($_file->getPath().'/'.$_file->getFileName(), true);
+        if (is_array($files)) {
+            foreach ($files as $_k => $_file) {
+                if (!RECURSIVE) $_file[0] = $path.$_file[0];
+                $this->_tokens->parse($_file[0]);
             }
+        } else {
+            // REALLY??
+            single:
+            $this->_tokens->parse($path);
+        }
 
-            if (preg_match('['.EXTENSION.']', $_file->getFileName())) {
-                $this->_tokens->parse($_file->getPath().'/'.$_file->getFileName());
+        info("File parsing complete");
+        task("Beginning Token parser");
+
+        foreach ($this->_tokens as $_k => $_token) {
+            if ($_token->isDocBlock()) {
+                $this->parseDocBlock($_token->getValue());
             }
         }
+
+        info("Token parsing complete");
+
+        task("Beginning documentation generator");
+    }
+
+    /**
+     * Parses a PHP Doc block into a readable array.
+     *
+     * @credit Paul James PHPDoctor
+     */
+    function parseDocBlock($comment)
+    {
+        if (substr(trim($comment), 0, 3) != '/**') return array(); // not doc comment, abort
+
+        $data = array(
+            'docComment' => $comment,
+            'tags' => array()
+        );
+
+        $explodedComment = preg_split('/\n[ \n\t\/]*\*[ \t]*@/', "\n".$comment);
+
+        preg_match_all('/^[ \t]*[\/*]*\**( ?.*)[ \t\/*]*$/m', array_shift($explodedComment), $matches); // changed; we need the leading whitespace to detect multi-line list entries
+
+        foreach ($explodedComment as $tag) { // process tags
+            // strip whitespace, newlines and asterisks
+            $tag = preg_replace('/(^[\s\n\*]+|[\s\*]*\*\/$)/m', ' ', $tag); // fixed: empty comment lines at end of docblock
+            $tag = preg_replace('/\n+/', '', $tag);
+            $tag = trim($tag);
+
+            $parts = preg_split('/\s+/', $tag);
+            $name = isset($parts[0]) ? array_shift($parts) : $tag;
+            $text = join(' ', $parts);
+            var_dump($name);
+
+        }
+        return $data;
     }
 
 }
 
 $compile = new Compiler();
-$compile->compile('../prggmr/');
+$compile->compile('docpx.php');
