@@ -37,7 +37,7 @@ define('VALIDATE', false);
  * Set to true to enable recursivly scanning directories for
  * files
  */
-define('RECURSIVE', false);
+define('RECURSIVE', true);
 /**
  * Set to true to enable color output in the console based on the
  * message type.
@@ -48,9 +48,16 @@ define('COLORS', true);
  */
 define('EXTENSION', '.php|.php5|.php4|.inc.php');
 /**
- * Directory Names to omit from inclusion
+ * Directory Names to omit from inclusion seperate with ","
  */
-define('EXCLUDE_DIR', '.git|.svn');
+define('EXCLUDE_DIR', '.git,.svn');
+
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    define('WINDOWS', true);
+} else {
+    define('WINDOWS', false);
+}
+
 
 /**
  * Log
@@ -100,8 +107,9 @@ class Logger {
         );
 
         // am I being verbose ??
-        if (VERBOSE) {
-            if (COLORS) {
+        if (VERBOSE || $type === (Logger::ERROR || Logger::WARN)) {
+            // disable windows output
+            if (COLORS && !WINDOWS) {
                 switch($type) {
                     case Logger::ERROR:
                         $message = "\033[1;31m".$message."\033[0m";
@@ -405,49 +413,77 @@ class Compiler {
         warning("Original author Nickolas Whiting http://www.nwhiting.com");
     }
 
-    public function compile($path) {
-
+    public function compile($path = null) {
+        
+        // if nothing use the current path
+        if (null === $path) {
+            $path = realpath(__DIR__).'/';
+        }
+    
         $this->path = $path;
-
-        if (!is_dir($path)) {
-
-            if (is_file($path) && file_exists($path)) {
-                // REALLY??
-                goto single;
+        
+        // Check if we are parsing a single php source file
+        if (is_dir($path)) {
+            
+            // are we recursive
+            if (RECURSIVE) {
+                
+                info(
+                    sprintf(
+                        'Beginning Recursive Directory scan "%s"',
+                        $path
+                    )
+                );
+                
+                $directory = new \RecursiveDirectoryIterator($path);
+                $iterator = new \RecursiveIteratorIterator($directory);
+                $files = new \RegexIterator($iterator, '/^.+\\'.EXTENSION.'/i', \RecursiveRegexIterator::GET_MATCH);
+            } else {
+                
+                info(
+                    sprintf(
+                        'Beginning Directory scan "%s"',
+                        $path
+                    )
+                );
+                
+                $directory = new \DirectoryIterator($path);
+                $iterator = new \IteratorIterator($directory);
+                $files = new \RegexIterator($iterator, '/^.+\\'.EXTENSION.'$/i', \RegexIterator::GET_MATCH);
             }
-
+            
+            info("im here");
+            
+        } elseif (is_file($path)) {
+            $files = $path;
+        } else {
+            // path not found
             error(sprintf(
-                'Directory "%s" not found, not other directories to scan'
+                'Path "%s" not found'
             , $path));
         }
 
-        info(
-            sprintf(
-                'Beginning Directory scan "%s"',
-                $path
-            )
-        );
-
-        if (RECURSIVE) {
-            $directory = new \RecursiveDirectoryIterator($path);
-            $iterator = new \RecursiveIteratorIterator($directory);
-            $files = new \RegexIterator($iterator, '/^.+\\'.EXTENSION.'/i', \RecursiveRegexIterator::GET_MATCH);
-        } else {
-            $directory = new \DirectoryIterator($path);
-            $iterator = new \IteratorIterator($directory);
-            $files = new \RegexIterator($iterator, '/^.+\\'.EXTENSION.'$/i', \RegexIterator::GET_MATCH);
-        }
-
-
-        if (is_array($files)) {
+        if (is_object($files)) {
+            $exclude = explode(',', EXCLUDE_DIR);
             foreach ($files as $_k => $_file) {
                 if (!RECURSIVE) $_file[0] = $path.$_file[0];
+                $cont = false;
+                foreach ($exclude as $_exclude) {
+                    if (false !== strpos($_file[0], $_exclude)) {
+                        $cont = true;
+                        break;
+                    }
+                }
+                if ($cont) continue;
                 $this->_tokens->parse($_file[0]);
+                
             }
+        } elseif (!isset($files)) {
+            error(
+                "Failed to find any php source files"
+            );
         } else {
-            // REALLY??
-            single:
-            $this->_tokens->parse($path);
+            $this->_tokens->parse($files);
         }
 
         info("File parsing complete");
@@ -500,4 +536,4 @@ class Compiler {
 }
 
 $compile = new Compiler();
-$compile->compile('docpx.php');
+$compile->compile();
