@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-namespace docpx;
+namespace docpx\test\names\strin;
 /**
  * Copyright 2010 Nickolas Whiting
  *
@@ -23,6 +23,11 @@ namespace docpx;
  */
 
 /**
+ * Current version of phpdocpx
+ */
+define('DOCPX_VERSION', '0.0.1a');
+
+/**
  * Set to true to output all activity
  */
 define('VERBOSE', true);
@@ -34,7 +39,7 @@ define('VERBOSE', true);
  */
 define('VALIDATE', false);
 /**
- * Set to true to enable recursivly scanning directories for
+ * Set to true to enable recursively scanning directories for
  * files
  */
 define('RECURSIVE', true);
@@ -48,9 +53,13 @@ define('COLORS', true);
  */
 define('EXTENSION', '.php|.php5|.php4|.inc.php');
 /**
- * Directory Names to omit from inclusion seperate with ","
+ * Directory Names to omit from inclusion separate with ","
  */
 define('EXCLUDE_DIR', '.git,.svn');
+/**
+ * Parse comment blocks using Mardown
+ */
+define('MARKDOWN_SUPPORT', false);
 
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     define('WINDOWS', true);
@@ -62,13 +71,13 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 /**
  * Log
  *
- * The Log object simply logs all activites docpx is performing.
+ * The Log object simply logs all activities docpx is performing.
  */
 class Logger {
 
     /**
      * Task message, logged as a operation performed. Provides no indication
-     * on wether or not it was succesfull.
+     * on whether or not it was successful.
      */
     const TASK = 1001;
 
@@ -181,10 +190,100 @@ class Node {
     public function isNamespace() {
         return $this->_token[0] === T_NAMESPACE;
     }
+    
+    public function isNamespaceSeperator()
+    {
+        return $this->_token[0] === T_NS_SEPARATOR;
+    }
 
     public function isDocBlock()
     {
         return $this->_token[0] === T_DOC_COMMENT;
+    }
+    
+    public function isClass()
+    {
+        return $this->_token[0] === T_CLASS;
+    }
+    
+    public function isVar()
+    {
+        return $this->_token[0] === T_VARIABLE;
+    }
+    
+    public function isString()
+    {
+        return $this->_token[0] === T_STRING;
+    }
+    
+    public function isStatic()
+    {
+        return $this->_token[0] === T_STATIC;
+    }
+    
+    public function isFunction()
+    {
+        return $this->_token[0] === T_FUNCTION;
+    }
+    
+    public function isPublic()
+    {
+        return $this->_token[0] === T_PUBLIC;
+    }
+    
+    public function isPrivate()
+    {
+        return $this->_token[0] === T_PRIVATE;
+    }
+    
+    public function isProtected()
+    {
+        return $this->_token[0] === T_PROTECTED;
+    }
+    
+    public function isUse()
+    {
+        return $this->_token[0] === T_USE;
+    }
+    
+    public function isInterface()
+    {
+        return $this->_token[0] === T_INTERFACE;
+    }
+    
+    public function isAbstract()
+    {
+        return $this->_token[0] === T_ABSTRACT;
+    }
+    
+    public function isFinal()
+    {
+        return $this->_token[0] === T_FINAL;
+    }
+    
+    public function isConst()
+    {
+        return $this->_token === T_CONST;
+    }
+    
+    public function isOpenBracket()
+    {
+        return $this->_token[0] === T_CURLY_OPEN;
+    }
+    
+    public function getLineNumber()
+    {
+        return $this->_token[2];
+    }
+    
+    public function isWhitespace()
+    {
+        return $this->_token[0] === T_WHITESPACE;
+    }
+    
+    public function getType()
+    {
+        return token_name($this->_token[0]);
     }
 }
 
@@ -216,7 +315,7 @@ class Tokens implements \Iterator, \Countable {
      *
      * @param  string  $file  PHP Source file to parse.
      */
-    public function parse($file)
+    public function __construct($file)
     {
         if (!file_exists($file)) {
             error(sprintf(
@@ -247,7 +346,7 @@ class Tokens implements \Iterator, \Countable {
 
         task(
             sprintf(
-                'Parsing file "%s"',
+                'Tokenizing file "%s"',
                 $file
             )
         );
@@ -267,7 +366,7 @@ class Tokens implements \Iterator, \Countable {
 
         task(
             sprintf(
-                'File "%s" parsing complete',
+                'Token generation for file "%s" complete',
                 $file
             )
         );
@@ -325,7 +424,7 @@ class Tokens implements \Iterator, \Countable {
     }
 
     /**
-     * Moves foward to the next element
+     * Moves forward to the next element
      *
      * @return  mixed  The current element after next.
      */
@@ -356,26 +455,90 @@ class Tokens implements \Iterator, \Countable {
  * Doc
  *
  * A doc object is what will be passed to the writer for outputting
- * the API.
+ * the API holding the contents of each parsed file with each node object
+ * ready to be read by the Writer class.
  */
 class Doc {
+    
+    /**
+     * Path to this doc objects file.
+     */
+    protected $_file = null;
+    
+    /**
+     * Tokens generated for this doc.
+     */
+    protected $_tokens = null;
 
+    
+    /**
+     * Constructs a new Doc object.
+     *
+     * @param  string  $file  PHP source file path
+     * @param  object  $tokens docpx\Tokens
+     */
+    public function __construct($file, Tokens $tokens)
+    {
+        $this->_file = $file;
+        $this->_tokens = $tokens;
+    }
+    
+    /**
+     * Parses the Doc tokens.
+     */
+    public function parse()
+    {
+        $parser = new Parser();
+        
+        foreach ($this->_tokens as $token) {
+            
+            $inclass = false;
+            $data = array();
+            $comments = null;
+            
+            // get the token type
+            switch (true) {
+                
+                case $token->isNamespace():
+                    while(!$this->_tokens->next()->isString());
+                    $namespace = $this->_tokens->current()->getValue();
+                    while($this->_tokens->next()->isNamespaceSeperator()) {
+                        $namespace .= '\\'.$this->_tokens->next()->getValue();
+                    }
+                    $data['namespace'] = $namespace;
+                    info(
+                        sprintf(
+                            'Entering namespace %s',
+                            $namespace
+                        )
+                    );
+                break;
+            
+                case $token->isDocBlock():
+                    $comments[] = $parser->docblock($token->getValue());
+                    break;
+            }
+            
+        }
+    }
 }
 
 /**
  * Reference
  *
- * A reference object used to reference classes and namespaces when
+ * A reference object used to reference files, classes and namespaces when
  * generating the docs.
  */
 class References {
-
+    
 }
 
 /**
  * Writer
  *
- * The object which will be responsible for generating the output.
+ * The object which will be responsible for generating the output,
+ * the writer is passed a group of Doc objects which it uses to
+ * generate the HTML output.
  */
 class Writer {
 
@@ -387,13 +550,45 @@ class Writer {
  * The object which will parse a Tokens object and generate Doc objects.
  */
 class Parser {
+    
+    /**
+     * Parses a PHP Doc block into a readable array.
+     *
+     * @credit Paul James PHPDoctor
+     */
+    function docblock($comment)
+    {
+        if (substr(trim($comment), 0, 3) != '/**') return array(); // not doc comment, abort
 
+        $data = array(
+            'docComment' => $comment,
+            'tags' => array()
+        );
+
+        $explodedComment = preg_split('/\n[ \n\t\/]*\*[ \t]*@/', "\n".$comment);
+
+        preg_match_all('/^[ \t]*[\/*]*\**( ?.*)[ \t\/*]*$/m', array_shift($explodedComment), $matches); // changed; we need the leading whitespace to detect multi-line list entries
+
+        foreach ($explodedComment as $tag) { // process tags
+            // strip whitespace, newlines and asterisks
+            $tag = preg_replace('/(^[\s\n\*]+|[\s\*]*\*\/$)/m', ' ', $tag); // fixed: empty comment lines at end of docblock
+            $tag = preg_replace('/\n+/', '', $tag);
+            $tag = trim($tag);
+
+            $parts = preg_split('/\s+/', $tag);
+            $name = isset($parts[0]) ? array_shift($parts) : $tag;
+            $text = join(' ', $parts);
+        }
+        return $data;
+    }
+    
 }
 
 /**
  * Compiler
  *
- * The object which will run and compile the documentation.
+ * The object which will run and compile the documentation
+ * the main workhorse of docpx.
  */
 class Compiler {
 
@@ -403,16 +598,26 @@ class Compiler {
      * @var  string  Path to the php files that will be parsed
      */
     public $path = null;
+    
+    /**
+     * Collection of Doc objects
+     */
+    public $docs = array();
+    
+    /**
+     * List of files parsed
+     */
 
     public function __construct()
     {
-        $this->_tokens = new Tokens();
-
         warning("Docpx - The PHP 5.3 API Generator");
         info("---------------------------------");
         warning("Original author Nickolas Whiting http://www.nwhiting.com");
     }
-
+    
+    /**
+     * Runs the entire documentation generatation from start to finish.
+     */
     public function compile($path = null) {
         
         // if nothing use the current path
@@ -452,8 +657,6 @@ class Compiler {
                 $files = new \RegexIterator($iterator, '/^.+\\'.EXTENSION.'$/i', \RegexIterator::GET_MATCH);
             }
             
-            info("im here");
-            
         } elseif (is_file($path)) {
             $files = $path;
         } else {
@@ -462,6 +665,8 @@ class Compiler {
                 'Path "%s" not found'
             , $path));
         }
+        
+        $references = new References();
 
         if (is_object($files)) {
             $exclude = explode(',', EXCLUDE_DIR);
@@ -475,7 +680,7 @@ class Compiler {
                     }
                 }
                 if ($cont) continue;
-                $this->_tokens->parse($_file[0]);
+                $this->docs[$this->getRealPath($_file[0])] = new Doc($this->getRealPath($_file[0]), new Tokens($_file[0]));
                 
             }
         } elseif (!isset($files)) {
@@ -483,57 +688,30 @@ class Compiler {
                 "Failed to find any php source files"
             );
         } else {
-            $this->_tokens->parse($files);
+            $this->docs[$files] = new Doc($this->getRealPath($files), new Tokens($files));
         }
 
         info("File parsing complete");
-        task("Beginning Token parser");
+        task("Beginning Doc parser");
 
-        foreach ($this->_tokens as $_k => $_token) {
-            if ($_token->isDocBlock()) {
-                $this->parseDocBlock($_token->getValue());
-            }
+        foreach ($this->docs as $_path => $_doc) {
+            $_doc->parse();
         }
 
-        info("Token parsing complete");
+        info("Doc parsing complete");
 
         task("Beginning documentation generator");
     }
-
+    
     /**
-     * Parses a PHP Doc block into a readable array.
-     *
-     * @credit Paul James PHPDoctor
+     * Attempts to get the source path location for a php file
+     * based on the given source path.
      */
-    function parseDocBlock($comment)
+    public function getRealPath($path)
     {
-        if (substr(trim($comment), 0, 3) != '/**') return array(); // not doc comment, abort
-
-        $data = array(
-            'docComment' => $comment,
-            'tags' => array()
-        );
-
-        $explodedComment = preg_split('/\n[ \n\t\/]*\*[ \t]*@/', "\n".$comment);
-
-        preg_match_all('/^[ \t]*[\/*]*\**( ?.*)[ \t\/*]*$/m', array_shift($explodedComment), $matches); // changed; we need the leading whitespace to detect multi-line list entries
-
-        foreach ($explodedComment as $tag) { // process tags
-            // strip whitespace, newlines and asterisks
-            $tag = preg_replace('/(^[\s\n\*]+|[\s\*]*\*\/$)/m', ' ', $tag); // fixed: empty comment lines at end of docblock
-            $tag = preg_replace('/\n+/', '', $tag);
-            $tag = trim($tag);
-
-            $parts = preg_split('/\s+/', $tag);
-            $name = isset($parts[0]) ? array_shift($parts) : $tag;
-            $text = join(' ', $parts);
-            var_dump($name);
-
-        }
-        return $data;
+        return str_replace($this->path, '', $path);
     }
-
 }
 
 $compile = new Compiler();
-$compile->compile();
+$compile->compile('C:\wamp\www\prggmr\lib\\');
