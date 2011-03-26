@@ -29,12 +29,12 @@ define('VERBOSE', true);
  *
  * Disable to improve performance
  */
-define('VALIDATE', true);
+define('VALIDATE', false);
 /**
  * Set to true to enable recursively scanning directories for
  * files
  */
-define('RECURSIVE', false);
+define('RECURSIVE', true);
 /**
  * Set to true to enable color output in the console based on the
  * message type.
@@ -49,14 +49,14 @@ define('EXTENSION', '.php|.php5|.php4|.inc.php');
  */
 define('EXCLUDE_DIR', '.git,.svn');
 /**
- * Parse comment blocks using Mardown
+ * Parse comment blocks using Markdown
  */
-define('MARKDOWN_SUPPORT', false);
+define('MARKDOWN_SUPPORT', true);
 /**
  * Allow support for when a @ignore tag is encountered
  * docpx will ignore documentation of the next element.
  */
-define('IGNORE_TAG');
+define('IGNORE_TAG', true);
 
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     define('WINDOWS', true);
@@ -324,7 +324,7 @@ class Tokens implements \Iterator, \Countable {
             exec('php -l '.escapeshellarg($file), $output, $result);
 
             if ($result != 0) {
-                warn(sprintf(
+                warning(sprintf(
                     'The file "%s" could not be parsed as it contains errors skipping',
                     $file
                 ));
@@ -495,13 +495,13 @@ class Doc {
     {
         $parser = new Parser();
 
-        foreach ($this->_tokens as $token) {
+        $inclass = false;
+        $data = array();
+        $comments = null;
+        $lastdoc = null;
+        $namespace = null;
 
-            $inclass = false;
-            $data = array();
-            $comments = null;
-            $lastdoc = null;
-            $namespace = null;
+        foreach ($this->_tokens as $token) {
 
             // get the token type
             switch (true) {
@@ -527,6 +527,8 @@ class Doc {
                     $lastdoc = $docblock;
                     break;
             }
+            
+            var_dump($comments);
 
         }
     }
