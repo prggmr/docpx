@@ -3,6 +3,22 @@
 namespace docpx;
 
 /**
+ *  Copyright 2010 Nickolas Whiting
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+/**
  * Docpx API Generator
  *
  * Docpx is a PHP 5.3+ API Documentation generator that aims to be
@@ -57,6 +73,13 @@ define('MARKDOWN_SUPPORT', true);
  * docpx will ignore documentation of the next element.
  */
 define('IGNORE_TAG', true);
+/**
+ * Sets to have the first docblock in a file found to be parsed
+ * as the license doc. Note that the first comment encountered will
+ * be considered the license doc for the file and the second will be
+ * considered the file doc.
+ */
+define('HAS_LICENSE_DOC', true);
 
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     define('WINDOWS', true);
@@ -135,8 +158,6 @@ class Logger {
             }
             echo sprintf("[%s] %s \n", date('Y-m-d h:i:s', time()), $message);
         }
-
-        //Logger::write();
 
         // kill the script
         if ($type === Logger::ERROR) {
@@ -258,9 +279,14 @@ class Node {
         return $this->_token[0] === T_FINAL;
     }
 
-    public function isConst()
+    public function isClassConst()
     {
-        return $this->_token === T_CONST;
+        return $this->_token[0] === T_CONST;
+    }
+    
+    public function isFileConst()
+    {
+        return $this->_token[1] === 'define';
     }
 
     public function isOpenBracket()
@@ -471,10 +497,11 @@ class Doc {
      * @var  object  docpx\Tokens
      */
     protected $_tokens = null;
-
+    
     /**
-     *
+     * Documentation data for the file being parsed.
      */
+    protected $_data = null;
 
     /**
      * Constructs a new Doc object.
@@ -495,11 +522,15 @@ class Doc {
     {
         $parser = new Parser();
 
-        $inclass = false;
+        $class = false;
         $data = array();
         $comments = null;
         $lastdoc = null;
         $namespace = null;
+        $hasFileDoc = false;
+        $hasLicenseDoc = false;
+        $abstract = false;
+        $interface = false;
 
         foreach ($this->_tokens as $token) {
 
@@ -525,14 +556,101 @@ class Doc {
                     $docblock = Parser::comment($token->getValue());
                     $comments[] = $docblock;
                     $lastdoc = $docblock;
+                    // check for a license and file doc blocks as the first
+                    // encountered
+                    if (HAS_LICENSE_DOC && !$hasLicenseDoc) {
+                        info(
+                            'License docblock parsed'
+                        );
+                        // license doc
+                        $data['licensedoc'] = $docblock;
+                        $hasLicenseDoc = true;
+                        $lastdoc = null;
+                    } elseif (!$hasFileDoc) {
+                        info(
+                            'File docblock parsed'
+                        );
+                        // file doc
+                        $data['filedoc'] = $docblock;
+                        $hasFileDoc = true;
+                        $lastdoc = null;
+                    }
+                    break;
+                
+                case $token->isFileConst():
+                    if (!isset($data['const'])) $data['const'] = array();
+                    // line number
+                    $line = $token->getLineNumber();
+                    $name = $this->getNextNonWhitespace()->getValue();
+                    $value = $this->getNextNonWhitespace()->getValue();
+                    $data['const'][] = array(
+                        'name' => $name,
+                        'doc' => $lastdoc,
+                        'value' => $value,
+                        'line' => $line
+                    );
+                    $lastdoc = null;
+                    break;
+                
+                case $token->isClass():
+                    // are we currently inside a class?
+                    if ($class) {
+                        task(
+                            sprintf(
+                                "Leaving class %s",
+                                $class['name']
+                            )
+                        );
+                        // add this class to the classes index
+                        if (!isset($data['classes'])) $data['classes'] = array();
+                        $data['classes'][] = $class;
+                    }
+                    $name = $this->getNextNonWhitespace()->getValue();
+                    task(
+                        sprintf(
+                            "Entering class %s", $name
+                        )
+                    );
+                    $class = array(
+                        'name' => $name,
+                        'line' => $token->getLineNumber(),
+                        'abstract' => $abstract,
+                        'interface' => $interface
+                    );
+                    
+                    $abstract = false;
+                    break;
+                
+                case $token->isAbstract():
+                    // set flag as next parsed class or method is abstract
+                    $abstract = true;
+                    break;
+                
+                case $token->isInterface():
+                    $interface = true;
                     break;
             }
-            
-            var_dump($comments);
-
         }
+        
+        var_dump($data);
+    }
+    
+    /**
+     * Returns the next non-whitespace token found.
+     *
+     * @return  object  docpx\Node
+     */
+    public function getNextNonWhitespace()
+    {
+        if (!$this->_tokens->next()->isWhitespace()) return $this->_tokens->current();
+        while(!$this->_tokens->next()->isWhitespace()) return $this->_tokens->current();
     }
 }
+
+/**
+ * Interface to some shit
+ */
+interface References_Interface {}
 
 /**
  * Reference
