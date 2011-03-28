@@ -192,119 +192,239 @@ function info($message) {
  * A node is a representation of a php token.
  */
 class Node {
-
+    
+    /**
+     * Token array
+     *
+     * @var  array
+     */
     public $_token = null;
-
+    
+    /**
+     * Construct a new node object
+     *
+     * @param  array  $token  Token array
+     */
     public function __construct(array $token)
     {
         $this->_token = $token;
     }
-
-    public function getValue()
+    
+    /**
+     * Returns the value of the token
+     *
+     * @return  mixed
+     */
+    public function getValue(/* ... */)
     {
         return $this->_token[1];
     }
-
-    public function isNamespace() {
+    
+    /**
+     * Returns if token is a namespace.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isNamespace(/* ... */) {
         return $this->_token[0] === T_NAMESPACE;
     }
-
-    public function isNamespaceSeperator()
+    
+    /**
+     * Returns if token is a namespace seperator.
+     *
+     * @return  boolean  True | False otherwise
+     */    
+    public function isNamespaceSeperator(/* ... */)
     {
         return $this->_token[0] === T_NS_SEPARATOR;
     }
-
-    public function isDocBlock()
+    
+    /**
+     * Returns if token is a docblock.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isDocBlock(/* ... */)
     {
         return $this->_token[0] === T_DOC_COMMENT;
     }
-
-    public function isClass()
+    
+    /**
+     * Returns if token is a class.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isClass(/* ... */)
     {
         return $this->_token[0] === T_CLASS;
     }
-
-    public function isVar()
+    
+    /**
+     * Returns if token is a variable.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isVar(/* ... */)
     {
         return $this->_token[0] === T_VARIABLE;
     }
-
-    public function isString()
+    
+    /**
+     * Returns if token is a string.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isString(/* ... */)
     {
         return $this->_token[0] === T_STRING;
     }
-
-    public function isStatic()
+    
+    /**
+     * Returns if token is a static declaration.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isStatic(/* ... */)
     {
         return $this->_token[0] === T_STATIC;
     }
-
-    public function isFunction()
+    
+    /**
+     * Returns if token is a function or class method.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isFunction(/* ... */)
     {
         return $this->_token[0] === T_FUNCTION;
     }
-
-    public function isPublic()
+    
+    /**
+     * Returns if token is a public declaration.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isPublic(/* ... */)
     {
         return $this->_token[0] === T_PUBLIC;
     }
-
-    public function isPrivate()
+    
+    /**
+     * Returns if token is a private declaration.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isPrivate(/* ... */)
     {
         return $this->_token[0] === T_PRIVATE;
     }
-
-    public function isProtected()
+    
+    /**
+     * Returns if token is a protected declaration.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isProtected(/* ... */)
     {
         return $this->_token[0] === T_PROTECTED;
     }
-
-    public function isUse()
+    
+    /**
+     * Returns if token is a namespace use reference declaration.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isUse(/* ... */)
     {
         return $this->_token[0] === T_USE;
     }
-
-    public function isInterface()
+    
+    /**
+     * Returns if token is a interface decleration.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isInterface(/* ... */)
     {
         return $this->_token[0] === T_INTERFACE;
     }
-
-    public function isAbstract()
+    
+    /**
+     * Returns if token is a abstract decleration.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isAbstract(/* ... */)
     {
         return $this->_token[0] === T_ABSTRACT;
     }
-
-    public function isFinal()
+    
+    /**
+     * Returns if token is a final decleration.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isFinal(/* ... */)
     {
         return $this->_token[0] === T_FINAL;
     }
-
-    public function isClassConst()
+    
+    /**
+     * Returns if token is a class constant decleration.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isClassConst(/* ... */)
     {
         return $this->_token[0] === T_CONST;
     }
     
-    public function isFileConst()
+    /**
+     * Returns if token is a file constant decleration.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isFileConst(/* ... */)
     {
         return $this->_token[1] === 'define';
     }
-
-    public function isOpenBracket()
+    
+    /**
+     * Returns if token is an opening brace.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isOpenBracket(/* ... */)
     {
         return $this->_token[0] === T_CURLY_OPEN;
     }
-
-    public function getLineNumber()
+    
+    /**
+     * Returns line number the token is on wihin the source.
+     *
+     * @return  integer  
+     */
+    public function getLineNumber(/* ... */)
     {
         return $this->_token[2];
     }
-
-    public function isWhitespace()
+    
+    /**
+     * Returns if token is whitespace.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isWhitespace(/* ... */)
     {
         return $this->_token[0] === T_WHITESPACE;
     }
-
-    public function getType()
+    
+    /**
+     * Returns the string type of the token.
+     *
+     * @return  string
+     */
+    public function getType(/* ... */)
     {
         return token_name($this->_token[0]);
     }
@@ -518,7 +638,7 @@ class Doc {
     /**
      * Parses the Doc tokens.
      */
-    public function parse()
+    public function parse(/* ... */)
     {
         $parser = new Parser();
 
@@ -632,7 +752,6 @@ class Doc {
             }
         }
         
-        var_dump($data);
     }
     
     /**
