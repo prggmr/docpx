@@ -192,14 +192,14 @@ function info($message) {
  * A node is a representation of a php token.
  */
 class Node {
-    
+
     /**
      * Token array
      *
      * @var  array
      */
     public $_token = null;
-    
+
     /**
      * Construct a new node object
      *
@@ -209,7 +209,7 @@ class Node {
     {
         $this->_token = $token;
     }
-    
+
     /**
      * Returns the value of the token
      *
@@ -219,7 +219,7 @@ class Node {
     {
         return $this->_token[1];
     }
-    
+
     /**
      * Returns if token is a namespace.
      *
@@ -228,17 +228,17 @@ class Node {
     public function isNamespace(/* ... */) {
         return $this->_token[0] === T_NAMESPACE;
     }
-    
+
     /**
      * Returns if token is a namespace seperator.
      *
      * @return  boolean  True | False otherwise
-     */    
+     */
     public function isNamespaceSeperator(/* ... */)
     {
         return $this->_token[0] === T_NS_SEPARATOR;
     }
-    
+
     /**
      * Returns if token is a docblock.
      *
@@ -248,7 +248,7 @@ class Node {
     {
         return $this->_token[0] === T_DOC_COMMENT;
     }
-    
+
     /**
      * Returns if token is a class.
      *
@@ -258,7 +258,7 @@ class Node {
     {
         return $this->_token[0] === T_CLASS;
     }
-    
+
     /**
      * Returns if token is a variable.
      *
@@ -268,7 +268,7 @@ class Node {
     {
         return $this->_token[0] === T_VARIABLE;
     }
-    
+
     /**
      * Returns if token is a string.
      *
@@ -278,7 +278,7 @@ class Node {
     {
         return $this->_token[0] === T_STRING;
     }
-    
+
     /**
      * Returns if token is a static declaration.
      *
@@ -288,7 +288,7 @@ class Node {
     {
         return $this->_token[0] === T_STATIC;
     }
-    
+
     /**
      * Returns if token is a function or class method.
      *
@@ -298,7 +298,7 @@ class Node {
     {
         return $this->_token[0] === T_FUNCTION;
     }
-    
+
     /**
      * Returns if token is a public declaration.
      *
@@ -308,7 +308,7 @@ class Node {
     {
         return $this->_token[0] === T_PUBLIC;
     }
-    
+
     /**
      * Returns if token is a private declaration.
      *
@@ -318,7 +318,7 @@ class Node {
     {
         return $this->_token[0] === T_PRIVATE;
     }
-    
+
     /**
      * Returns if token is a protected declaration.
      *
@@ -328,7 +328,7 @@ class Node {
     {
         return $this->_token[0] === T_PROTECTED;
     }
-    
+
     /**
      * Returns if token is a namespace use reference declaration.
      *
@@ -338,7 +338,7 @@ class Node {
     {
         return $this->_token[0] === T_USE;
     }
-    
+
     /**
      * Returns if token is a interface decleration.
      *
@@ -348,7 +348,7 @@ class Node {
     {
         return $this->_token[0] === T_INTERFACE;
     }
-    
+
     /**
      * Returns if token is a abstract decleration.
      *
@@ -358,7 +358,7 @@ class Node {
     {
         return $this->_token[0] === T_ABSTRACT;
     }
-    
+
     /**
      * Returns if token is a final decleration.
      *
@@ -368,7 +368,7 @@ class Node {
     {
         return $this->_token[0] === T_FINAL;
     }
-    
+
     /**
      * Returns if token is a class constant decleration.
      *
@@ -378,7 +378,7 @@ class Node {
     {
         return $this->_token[0] === T_CONST;
     }
-    
+
     /**
      * Returns if token is a file constant decleration.
      *
@@ -388,7 +388,7 @@ class Node {
     {
         return $this->_token[1] === 'define';
     }
-    
+
     /**
      * Returns if token is an opening brace.
      *
@@ -398,17 +398,17 @@ class Node {
     {
         return $this->_token[0] === T_CURLY_OPEN;
     }
-    
+
     /**
      * Returns line number the token is on wihin the source.
      *
-     * @return  integer  
+     * @return  integer
      */
     public function getLineNumber(/* ... */)
     {
         return $this->_token[2];
     }
-    
+
     /**
      * Returns if token is whitespace.
      *
@@ -418,7 +418,37 @@ class Node {
     {
         return $this->_token[0] === T_WHITESPACE;
     }
-    
+
+    /**
+     * Returns if token is enscaped whitespace string.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isEnscapedWhitespace(/* ... */)
+    {
+        return $this->_token[0] === T_ENCAPSED_AND_WHITESPACE;
+    }
+
+    /**
+     * Returns if token is a class extension identifier.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isExtends(/* ... */)
+    {
+        return $this->_token[0] === T_EXTENDS;
+    }
+
+    /**
+     * Returns if token is a interface implement identifier.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isImplements(/* ... */)
+    {
+        return $this->_token[0] === T_IMPLEMENTS;
+    }
+
     /**
      * Returns the string type of the token.
      *
@@ -575,7 +605,10 @@ class Tokens implements \Iterator, \Countable {
     public function next(/* ... */)
     {
         $this->_valid = (next($this->_tokens) !== false);
-        return $this->current();
+        if ($this->_valid) {
+            return $this->current();
+        }
+        return false;
     }
 
     /**
@@ -617,7 +650,7 @@ class Doc {
      * @var  object  docpx\Tokens
      */
     protected $_tokens = null;
-    
+
     /**
      * Documentation data for the file being parsed.
      */
@@ -653,7 +686,7 @@ class Doc {
         $interface = false;
 
         foreach ($this->_tokens as $token) {
-
+            warning($token->getType());
             // get the token type
             switch (true) {
 
@@ -664,7 +697,7 @@ class Doc {
                         $namespace .= '\\'.$this->_tokens->next()->getValue();
                     }
                     $data['namespace'] = $namespace;
-                    info(
+                    task(
                         sprintf(
                             'Entering namespace %s',
                             $namespace
@@ -686,17 +719,9 @@ class Doc {
                         $data['licensedoc'] = $docblock;
                         $hasLicenseDoc = true;
                         $lastdoc = null;
-                    } elseif (!$hasFileDoc) {
-                        info(
-                            'File docblock parsed'
-                        );
-                        // file doc
-                        $data['filedoc'] = $docblock;
-                        $hasFileDoc = true;
-                        $lastdoc = null;
                     }
                     break;
-                
+
                 case $token->isFileConst():
                     if (!isset($data['const'])) $data['const'] = array();
                     // line number
@@ -711,19 +736,20 @@ class Doc {
                     );
                     $lastdoc = null;
                     break;
-                
+
                 case $token->isClass():
                     // are we currently inside a class?
                     if ($class) {
                         task(
                             sprintf(
                                 "Leaving class %s",
-                                $class['name']
+                                $class->getName()
                             )
                         );
                         // add this class to the classes index
                         if (!isset($data['classes'])) $data['classes'] = array();
                         $data['classes'][] = $class;
+                        $class = null;
                     }
                     $name = $this->getNextNonWhitespace()->getValue();
                     task(
@@ -731,29 +757,81 @@ class Doc {
                             "Entering class %s", $name
                         )
                     );
-                    $class = array(
+
+                    $classData = array(
                         'name' => $name,
                         'line' => $token->getLineNumber(),
+                        'doc' => $lastdoc,
                         'abstract' => $abstract,
                         'interface' => $interface
                     );
-                    
+                    $class = new Data($classData);
+                    $interface = false;
                     $abstract = false;
+                    $lastdoc = null;
                     break;
-                
+
                 case $token->isAbstract():
                     // set flag as next parsed class or method is abstract
                     $abstract = true;
                     break;
-                
+
                 case $token->isInterface():
                     $interface = true;
                     break;
+
+                case $token->isExtends():
+                    //$class->set('extends', $this->getNextNonWhitespace()->getValue());
+                    break;
+
+                case $token->isImplements():
+                    $interfaces = array();
+                    // loop through the next set of string tokens and set as interfaces
+                    $interfaces[] = $this->getNextNonWhitespace()->getValue();
+                    while(true) {
+                        $this->_tokens->next();
+                        if ($this->_tokens->valid()) {
+                            if ($this->_tokens->current()->isWhitespace()) {
+                                continue;
+                            } elseif ($this->_tokens->current()->isString()) {
+                                $interfaces[] = $this->_tokens->current()->getValue();
+                                continue;
+                            } elseif ($this->_tokens->current()->isNamespaceSeperator()) {
+                                // del prev as it is a namespace
+                                array_pop($interfaces);
+                                $name = $this->_tokens->prev()->getValue();
+                                // find all namespaces in interface
+                                while($this->_tokens->next()->isNamespaceSeperator()) {
+                                    $name .= '\\'.$this->_tokens->next()->getValue();
+                                }
+                                $interfaces[] = $name;
+                                continue;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                    $class->set('implements', $interfaces);
+                    break;
+
+                case $token->isFunction():
+
+                    break;
+
+                default:
+                    warning($token->getType());
+                    break;
             }
         }
-        
+
+        if (null !== $class) {
+            if (!isset($data['classes'])) $data['classes'] = array();
+            $data['classes'][] = $class;
+        }
+
+        return $data;
     }
-    
+
     /**
      * Returns the next non-whitespace token found.
      *
@@ -766,10 +844,6 @@ class Doc {
     }
 }
 
-/**
- * Interface to some shit
- */
-interface References_Interface {}
 
 /**
  * Reference
@@ -814,7 +888,7 @@ class Parser {
         'deprec', 'example', 'exception', 'global',
         'ignore', 'internal', 'name', 'package',
         'param', 'since', 'static', 'staticvar',
-        'subpackage', 'version', 'license'
+        'subpackage', 'version', 'license', 'credit'
 	);
 
     /**
@@ -1003,8 +1077,11 @@ class Compiler {
         task("Beginning Doc parser");
 
         foreach ($this->docs as $_path => $_doc) {
-            $_doc->parse();
+            $this->docs[$_path] = $_doc->parse();
         }
+
+        // TESTING
+        //var_dump($this->docs);
 
         info("Doc parsing complete");
 
@@ -1021,5 +1098,148 @@ class Compiler {
     }
 }
 
+/**
+ * Data
+ *
+ * The data class allows for OOP style referencing of arrays.
+ */
+class Data
+{
+    /**
+     * Registry property, information is stored as a `key` -> `value` pair.
+     *
+     * @var  array  Array of `key` -> `value` mappings for registry contents.
+     */
+    protected $__registry = array();
+
+    public function __construct($data = null) {
+        if (null != $data) {
+            if (is_array($data)) {
+                $this->set($data);
+            }
+        }
+    }
+
+    /**
+     *  Sets a variable.
+     *  Variables can be set using three different configurations, they can be
+     *  set as an ordinary `$key`, `$value` pair, an array of `$key` => `$value`
+     *  mappings which will be transversed, or finally as a "." delimited string
+     *  in the format of `$key`, `$value` which will be transformed into an array,
+     *  these configurations can also be combined.
+     *
+     *  @param  mixed  $key  A string identifier, array of key -> value mappings,
+     *          or a "." delimited string.
+     *  @param  mixed  $value  Value of the `$key`.
+     *  @param  boolean  $overwrite  Overwrite existing key if exists
+     *
+     *  @return  boolean
+     */
+    public function set($key, $value = null, $overwrite = true) {
+
+		if (null === $key) {
+			return false;
+		}
+
+        if (is_array($key)) {
+            foreach ($key as $k => $v) {
+                $this->set($k, $v, $overwrite);
+            }
+            return true;
+        }
+
+        if (true === $this->has($key) && !$overwrite) {
+            return false;
+        }
+        if (false !== strpos($key, '.')) {
+			$nodes  = explode('.', $key);
+			$data =& $this->__registry;
+			$nodeCount = count($nodes) - 1;
+			for ($i=0;$i!=$nodeCount;$i++) {
+                // Bug caused data to not overwrite if converting from ( any ) -> array
+                // and an overwrite is in order
+				if (!is_array($data[$nodes[$i]])) {
+					$data[$nodes[$i]] = array();
+				}
+				$data =& $data[$nodes[$i]];
+			}
+			$data[$nodes[$nodeCount]] = $value;
+			return true;
+		} else {
+            $this->__registry[$key] = $value;
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns a variable. The variable name can be
+     * provided as a single string of the variable or a "." delimited string
+     * which maps to the array tree storing this variable.
+     *
+     * @param  string  $key  A string of the variable name or a "." delimited
+     *         string containing the route of the array tree.
+     * @param  array   $options  An array of options to use while retrieving a
+     *         variable from the cache. Avaliable options.
+     *
+     *         `default` - Default value to return if `$key` is not found.
+     *
+     *         `tree` - Not Implemented
+     *
+     * @return  mixed
+     */
+    public function get($key, $options = array()) {
+        $defaults = array('default' => false, 'tree' => true);
+        $options += $defaults;
+
+        if (is_string($key)) {
+            if (false !== strpos($key, '.')) {
+                $keyArray = explode('.', $key);
+                $count    = count($keyArray) - 1;
+                $last     = $keyArray[$count];
+                $data     = $this->__registry;
+                for ($i=0;$i!=count($keyArray);$i++) {
+                    $node = $keyArray[$i];
+                    if ($node !== '') {
+                        if (array_key_exists($node, $data)) {
+                            if ($node == $last && $i == $count) {
+                                return $data[$node];
+                            }
+                            if (is_array($data[$node])) {
+                                $data = $data[$node];
+                            }
+                        }
+                    }
+                }
+                if ($data !== $this->__registry) {
+                    return $data;
+                }
+            }
+
+            return (!isset($this->__registry[$key])) ? $options['default'] : $this->__registry[$key];
+        }
+
+        throw new \InvalidArgumentException(
+            sprintf(
+                'Invalid arugment "$key" expected "string" received "%s"', gettype($key)
+            )
+        );
+    }
+
+    /**
+     * Returns if a variable identified by `$key` exists in the registry.
+     * `has` works just as `get` and allows for identical `$key`
+     * configuration.
+     * This is a mirrored shorthand of (prggmr::get($key, array('default' => false)) !== false);
+     *
+     * @param  $key  A string of the variable name or a "." delimited
+     *         string containing the route of the array tree.
+     * @return  boolean
+     */
+    public function has($key) {
+        return ($this->get($key, array('default' => false)) !== false);
+    }
+}
+
 $compile = new Compiler();
-$compile->compile();
+$compile->compile('test_parse.php');
