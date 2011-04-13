@@ -20,5 +20,7 @@ namespace docpx;
 /**
  * This is a test file containing class data for testing purposes.
  */
-abstract class Doctrine_Tree_AdjacencyList extends Doctrine_Tree implements Doctrine_Tree_Interface
-{ }
+class test_Class
+{
+    public function __construct(array $var1 = array('Test', 'Var1')) {}
+}

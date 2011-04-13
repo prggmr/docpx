@@ -80,6 +80,10 @@ define('IGNORE_TAG', true);
  * considered the file doc.
  */
 define('HAS_LICENSE_DOC', true);
+/**
+ * Flag to indicate exlusion of private class members
+ */
+define('EXCLUDE_PRIVATE', false);
 
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     define('WINDOWS', true);
@@ -448,6 +452,16 @@ class Node {
     {
         return $this->_token[0] === T_IMPLEMENTS;
     }
+    
+    /**
+     * Returns if token is a enscaped string.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isEnscapedString(/* ... */)
+    {
+        return $this->_token[0] === T_CONSTANT_ENCAPSED_STRING;
+    }
 
     /**
      * Returns the string type of the token.
@@ -506,13 +520,6 @@ class Tokens implements \Iterator, \Countable {
                 ));
                 return false;
             }
-
-            task(
-                sprintf(
-                    'File "%s" contains no PHP Errors',
-                    $file
-                )
-            );
         }
 
         $source = file_get_contents($file);
@@ -530,10 +537,12 @@ class Tokens implements \Iterator, \Countable {
                 try {
                     $this->_tokens[] = new Node($_token);
                 } catch (NodeException $e) {
-                    error(sprintf(
-                        'Error encountered when generating nodes "%s"',
-                        $e->getMessage()
-                    ));
+                    warning(
+                        sprintf(
+                            'Failed to generate tokens skipping file "%s"',
+                            $file
+                        )
+                    );
                 }
             }
         }
@@ -684,6 +693,9 @@ class Doc {
         $hasLicenseDoc = false;
         $abstract = false;
         $interface = false;
+        $pubic = false;
+        $protected = false;
+        $private = false;
 
         foreach ($this->_tokens as $token) {
             warning($token->getType());
@@ -807,17 +819,44 @@ class Doc {
                                 $interfaces[] = $name;
                                 continue;
                             } else {
+                                $this->_tokens->prev();
                                 break;
                             }
+                        } else {
+                            $this->_tokens->prev();
+                            break;
                         }
                     }
                     $class->set('implements', $interfaces);
                     break;
 
                 case $token->isFunction():
-
+                    $fdata = array(
+                        'name' => $this->getNextNonWhitespace(),
+                        'doc' => $lastdoc,
+                        'public' => $public,
+                        'protected' => $protected,
+                        'private' => $private
+                    );
+                    // parse the function parameters
+                    $vars = array();
+                    while(true) {
+                        
+                    }
                     break;
-
+                
+                case $token->isPublic():
+                    $public = true;
+                    break;
+                
+                case $token->isProtected():
+                    $protected = true;
+                    break;
+                
+                case $token->isPrivate():
+                    $private = true;
+                    break;
+                
                 default:
                     warning($token->getType());
                     break;
@@ -1081,7 +1120,7 @@ class Compiler {
         }
 
         // TESTING
-        //var_dump($this->docs);
+        var_dump($this->docs);
 
         info("Doc parsing complete");
 
