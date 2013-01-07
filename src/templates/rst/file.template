@@ -1,2 +1,5 @@
 .. <?=$file?> generated using docpx on <?=date('m/d/y h:ia')?>
 
+<?php
+
+if ()

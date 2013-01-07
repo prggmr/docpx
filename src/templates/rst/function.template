@@ -1,27 +1,6 @@
-.. function:: ftp\\upload(array $files, array $connection, [callable $callback = null])
+<?php
 
-   Performs a non-blocking FTP upload of the given file(s).
-
-   When multiple files are given they will be uploaded simultaneously using 
-   separate connections to the given ``$connection``.
-
-   The ``$callback`` will be called once the files begin uploading.
-
-   It is expected that the absolute path to the file will be given, failure to 
-   do so will cause unexpected behavior.
-
-   The connection array accepts,
-
-   * **hostname** - Hostname of the server to upload.
-   * **username** - Username to use when connecting.
-   * **password** - Password to use when connecting.
-   * **port** - Port number to connect on. *Default=21*
-   * **timeout** - Connection timeout in seconds. *Default=90*
-
-   :param array $files: Files to upload
-   :param array $connection: FTP Connection options
-   :param callable $callback: Function to call when upload begins
-   :return object: SIG_Upload
+// Get the doc tokens and check for function vars
 
 .. function:: <?=$token->get('namespace')?> <?=$token->get('name')?>
 
@@ -30,12 +9,28 @@
    $doc = $token->get('doc');
 
    if (is_array($doc)) {
-      echo $doc['description'];
+
+      echo trim($doc['description']);
+
+      if (is_array($doc['tags'])) {
+         foreach (\docpx\DocBlock::doctags() as $_tag) {
+            if (isset($doc['tags'][$_tag])) {
+               foreach ($doc['tags'][$_tag] as $_tag) {
+                  echo sprintf(
+                     ':%s %s: %s'.PHP_EOL,
+                     'param', 
+                     (isset($doc['tags'][$_tag]['name'])) ?
+                        sprintf('%s %s',
+                            $doc['tags'][$_tag]['type'],
+                            $doc['tags'][$_tag]['name']
+                        ) :
+                        $doc['tags'][$_tag]['type'],
+                        $type
+                  );
+               }
+            }
+         }
+      }
    }
 
    ?>
-
-   :param array $files: Files to upload
-   :param array $connection: FTP Connection options
-   :param callable $callback: Function to call when upload begins
-   :return object: SIG_Upload

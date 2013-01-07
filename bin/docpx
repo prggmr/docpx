@@ -65,4 +65,4 @@ if (!file_exists($runfile)) {
 
 $compiler = new \docpx\Compiler();
 $compiler->compile($runfile);
-// var_dump($compiler->getDocs());
+var_dump($compiler->getDocs());
