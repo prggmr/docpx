@@ -3,29 +3,46 @@
 /**
  * Runs docpx.
  */
-$usage = "usage: docpx <path>";
+$usage =
+"usage: docpx [-d][-h|--help] <parse_path> <output_dir>
 
-ini_set('memory_limit', -1);
+Options
+-------
+  -d/--debug Turn on debug mode, generating more verbose output.
+  -h/--help  Display this help message.
+
+Examples
+--------
+$: docpx docpx/src docs
+$: docpx -d /home/prggmr/XPSPL/src /home/prggmr/docs/XPSPL/
+";
 
 date_default_timezone_set('UTC');
-
-$runfile = false;
+array_shift($argv);
+var_dump($argv);
+$output = array_pop($argv);
+$runfile = array_pop($argv);
 // last param is file
-$runfile = $argv[count($argv) - 1];
 // if - is first char ignore file
 if (strpos($runfile, '-') === 0) {
     $runfile = false;
 }
 
 $options = getopt(
-    'd'
+    'dh', ['debug', 'help']
 );
 // parse args and check for options
 foreach ($options as $_i => $_arg) {
     // Hack
     $break = false;
     switch ($_i) {
+        case 'h':
+        case 'help':
+            echo $usage;
+            exit(0);
+            break;
         case 'd':
+        case 'debug':
             define('DOCPX_DEBUG', true);
             break;
         default:
@@ -52,6 +69,7 @@ require_once $path.'/../src/docblock.php';
 require_once $path.'/../src/token.php';
 require_once $path.'/../src/tokens.php';
 require_once $path.'/../src/compiler.php';
+require_once $path.'/../src/writer.php';
 unset($path);
 
 if (false == $runfile) {
@@ -65,4 +83,5 @@ if (!file_exists($runfile)) {
 
 $compiler = new \docpx\Compiler();
 $compiler->compile($runfile);
-var_dump($compiler->getDocs());
+$writer = new \docpx\Writer($compiler->getDocs());
+$writer->write($output);

@@ -41,10 +41,19 @@ class Writer {
     public function write($path)
     {
         foreach ($this->_docs as $_file => $_doc) {
-            $template = $this->template('file.php', [
+            $template = $this->template('file.template', [
                 'file' => $_file,
                 'doc' => $_doc
             ]);
+            $name = explode("/", $_file);
+            $output_name = explode('.', array_pop($name));
+            array_pop($output_name);
+            $name = sprintf(
+                '%s/%s.rst',
+                $path,
+                array_pop($output_name)
+            );
+            file_put_contents($name, $template);
         }
     }
 
@@ -60,7 +69,7 @@ class Writer {
     {
         extract($vars);
         ob_start();
-        include $template;
+        include 'templates/rst/'.$template;
         $template = ob_get_contents();
         ob_end_clean();
         return $template;

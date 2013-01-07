@@ -1,5 +1,11 @@
 .. <?=$file?> generated using docpx on <?=date('m/d/y h:ia')?>
 
 <?php
-
-if ()
+if (isset($doc['functions'])):
+foreach ($doc['functions'] as $_function):
+echo $this->template('function.template', [
+    'function' => $_function
+]);
+endforeach;
+endif;
+?>

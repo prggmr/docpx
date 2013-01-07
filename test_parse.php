@@ -48,6 +48,15 @@ namespace docpx;
  *     }
  *
  */
+function this_does_something(){
+
+}
+
+/**
+ * My Class
+ *
+ * This is my silly test class
+ */
 class test_Class
 {
     /**
