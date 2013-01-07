@@ -1,0 +1,68 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Runs docpx.
+ */
+$usage = "usage: docpx <path>";
+
+ini_set('memory_limit', -1);
+
+date_default_timezone_set('UTC');
+
+$runfile = false;
+// last param is file
+$runfile = $argv[count($argv) - 1];
+// if - is first char ignore file
+if (strpos($runfile, '-') === 0) {
+    $runfile = false;
+}
+
+$options = getopt(
+    'd'
+);
+// parse args and check for options
+foreach ($options as $_i => $_arg) {
+    // Hack
+    $break = false;
+    switch ($_i) {
+        case 'd':
+            define('DOCPX_DEBUG', true);
+            break;
+        default:
+            exit(sprintf(
+                "Unknown option '%s'\n%s",
+                $_i,
+                $usage
+            ));
+            break;
+    }
+    if ($break) break;
+}
+
+$path = dirname(realpath(__FILE__));
+
+/**
+ * INCLUDE
+ */
+require_once $path.'/../src/const.php';
+require_once $path.'/../src/logger.php';
+require_once $path.'/../src/data.php';
+require_once $path.'/../src/doc.php';
+require_once $path.'/../src/docblock.php';
+require_once $path.'/../src/token.php';
+require_once $path.'/../src/tokens.php';
+require_once $path.'/../src/compiler.php';
+unset($path);
+
+if (false == $runfile) {
+    \docpx\error('File/Path not received');
+    exit(0);
+}
+if (!file_exists($runfile)) {
+    \docpx\error("Could not open $runfile\n");
+    exit(0);
+}
+
+$compiler = new \docpx\Compiler();
+$compiler->compile($runfile);
+// var_dump($compiler->getDocs());
