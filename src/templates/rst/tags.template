@@ -1,6 +1,7 @@
 <?php
 foreach ($tags as $_tag => $_tags) {
     foreach ($_tags as $_block) {
+        $tag = $_tag;
         switch ($_tag) {
             case 'param':
                 $str = 
@@ -8,12 +9,25 @@ foreach ($tags as $_tag => $_tags) {
                 break;
             case 'return':
                 $str = 
-'    :%s: %s %s';
-                $_tag = 'rtype';                
+'    :%s: %s %s'.PHP_EOL;
+                $tag = 'rtype';
+                break;
+            case 'example':
+                $_block['type'] = '';
+                $_block['name'] = '';
+                $tag = '';
+                $str = 
+'
+Example
++++++++
+%s%s
+%s
+';
+                break;
         }
         echo sprintf(
             $str,
-            $_tag,
+            $tag,
             (isset($_block['name'])) ?
                 sprintf('%s %s',
                     trim($_block['type']),

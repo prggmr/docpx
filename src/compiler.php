@@ -113,7 +113,6 @@ class Compiler {
                 $this->getRealPath($files), 
                 new Tokens($files)
             );
-            include $files;
         }
 
         info("File parsing complete");
