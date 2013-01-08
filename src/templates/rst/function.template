@@ -1,3 +1,11 @@
+<?php
+echo $function->get('name');
+echo str_replace('(', '', $function->get('name'));
+$reflection = new ReflectionFunction(str_replace('(', '', str_replace(')', '' , $function->get('name'))));
+
+var_dump($reflection->getParameters());
+exit;
+?>
 .. function:: <?=$function->get('namespace')?> <?=$function->get('name')?>
 
 <?php

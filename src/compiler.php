@@ -103,7 +103,6 @@ class Compiler {
                     $this->getRealPath($_file[0]), 
                     new Tokens($_file[0])
                 );
-
             }
         } elseif (!isset($files)) {
             error(
@@ -114,6 +113,7 @@ class Compiler {
                 $this->getRealPath($files), 
                 new Tokens($files)
             );
+            include $files;
         }
 
         info("File parsing complete");
