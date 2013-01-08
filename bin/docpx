@@ -4,7 +4,7 @@
  * Runs docpx.
  */
 $usage =
-"usage: docpx [-d][-h|--help] <parse_path> <output_dir>
+"usage: docpx [-d][-h|--help] <input> <output>
 
 Options
 -------
@@ -19,13 +19,12 @@ $: docpx -d /home/prggmr/XPSPL/src /home/prggmr/docs/XPSPL/
 
 date_default_timezone_set('UTC');
 array_shift($argv);
-var_dump($argv);
 $output = array_pop($argv);
-$runfile = array_pop($argv);
+$input = array_pop($argv);
 // last param is file
 // if - is first char ignore file
-if (strpos($runfile, '-') === 0) {
-    $runfile = false;
+if (strpos($input, '-') === 0) {
+    $input = false;
 }
 
 $options = getopt(
@@ -56,8 +55,19 @@ foreach ($options as $_i => $_arg) {
     if ($break) break;
 }
 
-$path = dirname(realpath(__FILE__));
+if (false === $input || !file_exists($input)) {
+    \docpx\error('Invalid input');
+    exit(0);
+}
+if (false === $output || !is_writeable($output)) {
+    \docpx\error('Invalid output');
+    exit(0);
+}
 
+define('DOCPX_INPUT', $input);
+define('DOCPX_OUTPUT', $output);
+
+$path = dirname(realpath(__FILE__));
 /**
  * INCLUDE
  */
@@ -72,16 +82,7 @@ require_once $path.'/../src/compiler.php';
 require_once $path.'/../src/writer.php';
 unset($path);
 
-if (false == $runfile) {
-    \docpx\error('File/Path not received');
-    exit(0);
-}
-if (!file_exists($runfile)) {
-    \docpx\error("Could not open $runfile\n");
-    exit(0);
-}
-
 $compiler = new \docpx\Compiler();
-$compiler->compile($runfile);
+$compiler->compile($input);
 $writer = new \docpx\Writer($compiler->getDocs());
 $writer->write($output);

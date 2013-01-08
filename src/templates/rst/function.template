@@ -1,32 +1,18 @@
 .. function:: <?=$function->get('namespace')?> <?=$function->get('name')?>
 
-   <?php
+<?php
 
-   $doc = $function->get('doc');
+$doc = $function->get('doc');
 
-   if (is_array($doc)) {
+if (is_array($doc)) {
 
-      echo PHP_EOL.sprintf(
-'    %s',
-            str_replace("\n", "\n    ", trim($doc['description']))
-      ).PHP_EOL.PHP_EOL;
-      if (is_array($doc['tags'])) {
-         foreach ($doc['tags'] as $_tag => $_tags) {
-            foreach ($_tags as $_block) {
-               echo sprintf(
-'    :%s %s: %s'.PHP_EOL,
-                  $_tag,
-                  (isset($_block['name'])) ?
-                     sprintf('%s %s',
-                        $_block['type'],
-                        $_block['name']
-                     ) :
-                     $_block['type'],
-                     $_block['text']
-               );
-            }
-         }
-      }
-   }
-   echo PHP_EOL.PHP_EOL;
-   ?>
+    echo PHP_EOL.sprintf(
+    '    %s',
+        str_replace("\n", "\n    ", trim($doc['description']))
+    ).PHP_EOL.PHP_EOL;
+    if (is_array($doc['tags'])) {
+        echo $this->template('tags.template', ['tags' => $doc['tags']]);
+    }
+}
+echo PHP_EOL.PHP_EOL;
+?>

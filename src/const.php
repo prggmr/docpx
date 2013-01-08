@@ -5,6 +5,15 @@
  * that can be found in the LICENSE file.
  */
 
+
+if (!defined('DOCPX_INPUT')) {
+    define('DOCPX_INPUT', dirname(realpath(__FILE__)).'/..');
+}
+
+if (!defined('DOCPX_OUTPUT')) {
+    define('DOCPX_OUTPUT', getcwd());
+}
+
 if (!defined('DOCPX_DEBUG')) {
     define('DOCPX_DEBUG', false);
 }

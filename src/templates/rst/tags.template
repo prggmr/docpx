@@ -1,0 +1,26 @@
+<?php
+foreach ($tags as $_tag => $_tags) {
+    foreach ($_tags as $_block) {
+        switch ($_tag) {
+            case 'param':
+                $str = 
+'    :%s %s: %s'.PHP_EOL;
+                break;
+            case 'return':
+                $str = 
+'    :%s %s %s: ';                 
+        }
+        echo sprintf(
+            $str,
+            $_tag,
+            (isset($_block['name'])) ?
+                sprintf('%s %s',
+                    trim($_block['type']),
+                    trim($_block['name'])
+                ) :
+            trim($_block['type']),
+            trim($_block['text'])
+        );
+    }
+    echo PHP_EOL;
+}
