@@ -60,6 +60,16 @@ foreach ($options as $_i => $_arg) {
         case 'load-file':
             require_once $_arg;
             break;
+        case 'update':
+            fputs(STDOUT, 'Are you sure you want to update? [y/n] ');
+            $stdin = fopen('php://stdin', 'r');
+            $line = fgets($stdin);
+            if(trim($line) == 'y') {
+                exec('sudo '.dirname(realpath(__FILE__)).'/../install');
+                echo "Done".PHP_EOL;
+            }
+            exit(0);
+            break;
         default:
             exit(sprintf(
                 "Unknown option '%s'\n%s",
@@ -72,7 +82,6 @@ foreach ($options as $_i => $_arg) {
 }
 
 if (false === $output || !is_writeable($output)) {
-    \docpx\error('Invalid output').PHP_EOL;
     echo ('Invalid input');
     exit(0);
 }
