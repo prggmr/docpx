@@ -4,12 +4,15 @@
  * Runs docpx.
  */
 $usage =
-"usage: docpx [-d][-h|--help] <input> <output>
+"usage: docpx [-d][-h|--help][--update][-v|--version] 
+              <input> <output>
 
 Options
 -------
-  -d/--debug Turn on debug mode, generating more verbose output.
-  -h/--help  Display this help message.
+  -d/--debug   Turn on debug mode, generating more verbose output.
+  -h/--help    Display this help message.
+  --update     Updates docpx to the latest stable version.
+  -v/--version Display the current docpx version.
 
 Examples
 --------
@@ -19,6 +22,10 @@ $: docpx -d /home/prggmr/XPSPL/src /home/prggmr/docs/XPSPL/
 
 date_default_timezone_set('UTC');
 array_shift($argv);
+if (count($argv) == 0) {
+    echo $usage;
+    exit(0);
+}
 $output = array_pop($argv);
 $input = array_pop($argv);
 // last param is file
@@ -26,15 +33,20 @@ $input = array_pop($argv);
 if (strpos($input, '-') === 0) {
     $input = false;
 }
-
+$version = false;
 $options = getopt(
-    'dh', ['debug', 'help']
+    'dhv', ['version', 'debug', 'help', 'update']
 );
 // parse args and check for options
 foreach ($options as $_i => $_arg) {
     // Hack
     $break = false;
     switch ($_i) {
+        case 'v':
+        case 'version':
+            $version = true;
+            goto start;
+            break;
         case 'h':
         case 'help':
             echo $usage;
@@ -56,16 +68,18 @@ foreach ($options as $_i => $_arg) {
 }
 
 if (false === $input || !file_exists($input)) {
-    \docpx\error('Invalid input');
+    \docpx\error('Invalid input').PHP_EOL;
     exit(0);
 }
 if (false === $output || !is_writeable($output)) {
-    \docpx\error('Invalid output');
+    \docpx\error('Invalid output').PHP_EOL;
     exit(0);
 }
 
 define('DOCPX_INPUT', $input);
 define('DOCPX_OUTPUT', $output);
+
+start:
 
 $path = dirname(realpath(__FILE__));
 /**
@@ -81,6 +95,12 @@ require_once $path.'/../src/tokens.php';
 require_once $path.'/../src/compiler.php';
 require_once $path.'/../src/writer.php';
 unset($path);
+
+if ($version) {
+    echo 'docpx v'.DOCPX_VERSION.PHP_EOL;
+    echo DOCPX_MASTERMIND.PHP_EOL;
+    exit;
+}
 
 $compiler = new \docpx\Compiler();
 $compiler->compile($input);
