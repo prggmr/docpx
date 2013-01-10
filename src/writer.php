@@ -45,12 +45,24 @@ class Writer {
                 'file' => $_file,
                 'doc' => $_doc
             ]);
+            $write_path = $path;
             $name = explode("/", $_file);
-            $output_name = explode('.', array_pop($name));
+            $file = array_pop($name);
+            if (count($name) != 0) {
+                $total_dir = '';
+                foreach ($name as $_dir) {
+                    $total_dir = '/'.$_dir;
+                    if (!is_dir($write_path . $total_dir)) {
+                        mkdir($write_path . $total_dir);
+                    }
+                }
+                $write_path = $write_path . $total_dir;
+            }
+            $output_name = explode('.', $file);
             array_pop($output_name);
             $name = sprintf(
                 '%s/%s.rst',
-                $path,
+                $write_path,
                 array_pop($output_name)
             );
             file_put_contents($name, $template);
