@@ -69,6 +69,10 @@ define('HAS_LICENSE_DOC', true);
  * Flag to indicate exlusion of private class members
  */
 define('EXCLUDE_PRIVATE', false);
+/**
+ * Parameter no default value
+ */
+define('DOCPX_PARAM_NO_DEFAULT', 0x216e6f5f64656661756c7421);
 
 /**
  * Using Windows

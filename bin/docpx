@@ -4,13 +4,13 @@
  * Runs docpx.
  */
 $usage =
-"usage: docpx [-d][-h|--help][--update][-v|--version] 
+"usage: docpx [-d][-h|--help][--update][-v|--version][--load-file]
               <input> <output>
-
 Options
 -------
   -d/--debug   Turn on debug mode, generating more verbose output.
   -h/--help    Display this help message.
+  --load-file  File to load source for generating Reflection information.
   --update     Updates docpx to the latest stable version.
   -v/--version Display the current docpx version.
 
@@ -18,6 +18,7 @@ Examples
 --------
 $: docpx docpx/src docs
 $: docpx -d /home/prggmr/XPSPL/src /home/prggmr/docs/XPSPL/
+$: docpx --load-file=load.php /home/prggmr/XPSPL/src /home/prggmr/docs/XPSPL/
 ";
 
 date_default_timezone_set('UTC');
@@ -35,7 +36,7 @@ if (strpos($input, '-') === 0) {
 }
 $version = false;
 $options = getopt(
-    'dhv', ['version', 'debug', 'help', 'update']
+    'dhv', ['version', 'debug', 'help', 'update', 'load-file:']
 );
 // parse args and check for options
 foreach ($options as $_i => $_arg) {
@@ -56,6 +57,9 @@ foreach ($options as $_i => $_arg) {
         case 'debug':
             define('DOCPX_DEBUG', true);
             break;
+        case 'load-file':
+            require_once $_arg;
+            break;
         default:
             exit(sprintf(
                 "Unknown option '%s'\n%s",
@@ -67,12 +71,13 @@ foreach ($options as $_i => $_arg) {
     if ($break) break;
 }
 
-if (false === $input || !file_exists($input)) {
-    \docpx\error('Invalid input').PHP_EOL;
+if (false === $output || !is_writeable($output)) {
+    \docpx\error('Invalid output').PHP_EOL;
+    echo ('Invalid input');
     exit(0);
 }
 if (false === $output || !is_writeable($output)) {
-    \docpx\error('Invalid output').PHP_EOL;
+    echo('Invalid output');
     exit(0);
 }
 
@@ -94,6 +99,7 @@ require_once $path.'/../src/token.php';
 require_once $path.'/../src/tokens.php';
 require_once $path.'/../src/compiler.php';
 require_once $path.'/../src/writer.php';
+require_once $path.'/../src/utils.php';
 unset($path);
 
 if ($version) {

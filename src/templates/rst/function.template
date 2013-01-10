@@ -1,12 +1,51 @@
 <?php
-echo $function->get('name');
-echo str_replace('(', '', $function->get('name'));
-$reflection = new ReflectionFunction(str_replace('(', '', str_replace(')', '' , $function->get('name'))));
+try {
+    $reflection = new ReflectionFunction($function->get('name'));
+    $params = [];
+    foreach ($reflection->getParameters() as $_param) {
+        $name = $_param->getName();
+        try {
+            $value = $_param->getDefaultValue();
+        } catch (\Exception $e) {
+            $value = DOCPX_PARAM_NO_DEFAULT;
+        }
+        $params[] = [
+            'name' => $name,
+            'value' => $value
+        ];
+    }
+} catch (\Exception $e) {
+    $params = [];
+}
 
-var_dump($reflection->getParameters());
-exit;
+$func_name = $function->get('name');
+$func_params = [];
+$opt_c = 0;
+if (count($params) >= 0) {
+    foreach ($params as $_param) {
+        $optional = $_param['value'] !== DOCPX_PARAM_NO_DEFAULT;
+        if ($optional) {
+            $opt_c = $opt_c + 1;
+        }
+        $func_params[] = sprintf(
+            '%s',
+            (!$optional) ? '$'.$_param['name'] : sprintf(
+                '[%s = %s',
+                '$'.$_param['name'],
+                print_v($_param['value'])
+            )
+        );
+    }
+    $params = implode(', ', $func_params);
+    for ($i=0;$i<$opt_c;$i++) {
+        $params .= ']';
+    }
+} else {
+    $params = '';
+}
+
 ?>
-.. function:: <?=$function->get('namespace')?> <?=$function->get('name')?>
+.. function:: <?=$func_name?>(<?=$params?>)
 
 <?php
 

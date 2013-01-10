@@ -43,6 +43,15 @@ class Docblock {
     );
 
     /**
+     * List of docblock tags which return large portions of doc text.
+     *
+     * @var  array
+     */
+    public static $puredoctags = array(
+        'example'
+    );
+
+    /**
      * Parses a docblock comment into a readable array.
      *
      * @param  string  $comment  Docblock comment to parse.
@@ -73,7 +82,6 @@ class Docblock {
                 $tags[$type] = array($text);
             }
         }
-
         // Parse specific formatted tags
         foreach (static::$formattedtags as $_format) {
             if (isset($tags[$_format])) {
@@ -99,6 +107,16 @@ class Docblock {
                         }
                         $tags[$_format][$_k] = compact('type', 'text');
                     }
+                }
+            }
+        }
+
+        foreach (static::$puredoctags as $_tag) {
+            if (isset($tags[$_tag])) {
+                foreach ($tags[$_tag] as $_k => $_v) {
+                    $text = $_v;
+                    $type = $_tag;
+                    $tags[$_tag][$_k] = compact('type', 'text');
                 }
             }
         }

@@ -1,0 +1,57 @@
+#!/bin/bash
+
+install() {
+    echo "Downloading docpx"
+    curl -L -o /tmp/docpx.zip https://github.com/prggmr/docpx/archive/master.zip
+    cd /tmp
+    echo "Inflating"
+    unzip docpx.zip
+    cd docpx-master
+    echo "Running installation"
+    PHPPATH=$(php -r "echo get_include_path();") 
+    INSTALLPATH=""
+    BINPATH="/usr/bin"
+    for x in $(echo $PHPPATH | tr ":" "\n")
+    do
+        if [ "$x" != "." ]; then
+            INSTALL_PATH="$x"
+            break
+        fi
+    done
+    if [[ $INSTALL_PATH = "" ]]; then
+        echo "Could not find your PHP include path";
+        exit;
+    fi
+    if [ -d "$INSTALL_PATH/docpx" ]; then
+        rm -rf "$INSTALL_PATH/docpx"
+    fi;
+    mkdir $INSTALL_PATH/docpx
+    cp -Rf * "$INSTALL_PATH/docpx"
+    if [ -f "$BINPATH/docpx" ]; then
+        rm "$BINPATH/docpx"
+    fi;
+    echo "Installed docpx to $INSTALL_PATH/docpx"
+    echo "Installed executable to $BINPATH/docpx"
+    ln -s "$INSTALL_PATH/docpx/bin/docpx" "$BINPATH"
+    xpspl -v
+    echo "Report bugs to https://github.com/prggmr/docpx/issues"
+    echo "Enjoy"
+    echo "Install finished"
+    echo "Cleaning up"
+    cd ..
+    rm -rf /tmp/docpx-master
+    rm /tmp/docpx.zip
+    echo "Done"
+}
+
+#
+# Handle execution
+#
+main() {
+
+    # Start installation
+    install
+    exit 0
+}
+
+main

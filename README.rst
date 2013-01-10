@@ -1,7 +1,9 @@
 docpx
 =====
 
-Docpx is a PHP API generation tool for Sphinx_.
+Docpx is a way to create human friendly docs straight from our code.
+
+Currently Sphinx_ documentation is supported.
 
 .. _Sphinx: http://sphinx-doc.org/
 
