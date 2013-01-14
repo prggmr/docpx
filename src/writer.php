@@ -30,6 +30,7 @@ class Writer {
      */
     public function __construct($docs)
     {
+        require_once 'templates/rst/config.php';
         $this->_docs = $docs;
     }
 

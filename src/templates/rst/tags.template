@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright 2010-12 Nickolas Whiting. All rights reserved.
+ * Use of this source code is governed by the Apache 2 license
+ * that can be found in the LICENSE file.
+ */
 foreach ($tags as $_tag => $_tags) {
     foreach ($_tags as $_block) {
         $tag = $_tag;
@@ -13,14 +18,16 @@ foreach ($tags as $_tag => $_tags) {
                 $tag = 'rtype';
                 break;
             case 'example':
+                $ex = explode("\n", $_block['text'], 2);
+                $title = $ex[0];
+                $_block['text'] = $ex[1];
                 $_block['type'] = '';
                 $_block['name'] = '';
                 $tag = '';
                 $str = 
-'
-Example
-+++++++
-%s%s
+PHP_EOL.$title.PHP_EOL
+.str_repeat(RST_H3, strlen($title)).PHP_EOL
+.'%s%s
 %s
 ';
                 break;

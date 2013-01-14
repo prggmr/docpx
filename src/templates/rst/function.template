@@ -1,4 +1,11 @@
 <?php
+/**
+ * Copyright 2010-12 Nickolas Whiting. All rights reserved.
+ * Use of this source code is governed by the Apache 2 license
+ * that can be found in the LICENSE file.
+ */
+
+// Gather the function parameters
 try {
     $reflection = new ReflectionFunction($function->get('name'));
     $params = [];
@@ -17,11 +24,13 @@ try {
 } catch (\Exception $e) {
     $params = [];
 }
-
+// Get the name
 $func_name = $function->get('name');
 $func_params = [];
 $opt_c = 0;
-if (count($params) >= 0) {
+// If parameters configure them for output
+// @todo this should be moved into a function
+if (count($params) > 0) {
     foreach ($params as $_param) {
         $optional = $_param['value'] !== DOCPX_PARAM_NO_DEFAULT;
         if ($optional) {
@@ -44,7 +53,11 @@ if (count($params) >= 0) {
     $params = '';
 }
 
+// Output the Page title
+echo $func_name.PHP_EOL;
+echo str_repeat(RST_H2, strlen($func_name)).PHP_EOL;
 ?>
+
 .. function:: <?=$func_name?>(<?=$params?>)
 
 <?php
