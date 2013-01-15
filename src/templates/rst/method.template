@@ -1,0 +1,79 @@
+<?php
+/**
+ * Copyright 2010-12 Nickolas Whiting. All rights reserved.
+ * Use of this source code is governed by the Apache 2 license
+ * that can be found in the LICENSE file.
+ */
+
+// Gather the function parameters
+$reflection = new ReflectionMethod(
+    $class->get('name'), 
+    $method->get('name')
+);
+$params = [];
+foreach ($reflection->getParameters() as $_param) {
+    $name = $_param->getName();
+    try {
+        $value = $_param->getDefaultValue();
+    } catch (\Exception $e) {
+        $value = DOCPX_PARAM_NO_DEFAULT;
+    }
+    $params[] = [
+        'name' => $name,
+        'value' => $value
+    ];
+}
+
+// Get the name
+$func_name = $method->get('name');
+$func_params = [];
+$opt_c = 0;
+
+// If parameters configure them for output
+// @todo this should be moved into a function
+if (count($params) > 0) {
+    foreach ($params as $_param) {
+        $optional = $_param['value'] !== DOCPX_PARAM_NO_DEFAULT;
+        if ($optional) {
+            $opt_c = $opt_c + 1;
+        }
+        $func_params[] = sprintf(
+            '%s',
+            (!$optional) ? '$'.$_param['name'] : sprintf(
+                '[%s = %s',
+                '$'.$_param['name'],
+                print_v($_param['value'])
+            )
+        );
+    }
+    $params = implode(', ', $func_params);
+    for ($i=0;$i<$opt_c;$i++) {
+        $params .= ']';
+    }
+} else {
+    $params = '';
+}
+
+// Output the Page title
+echo $func_name.PHP_EOL;
+echo str_repeat(RST_H2, strlen($func_name)).PHP_EOL;
+?>
+
+.. function:: <?=$func_name?>(<?=$params?>)
+
+<?php
+
+$doc = $method->get('doc');
+
+if (is_array($doc)) {
+
+    echo PHP_EOL.sprintf(
+    '    %s',
+        str_replace("\n", "\n    ", trim($doc['description']))
+    ).PHP_EOL.PHP_EOL;
+    if (is_array($doc['tags'])) {
+        echo $this->template('tags.template', ['tags' => $doc['tags']]);
+    }
+}
+echo PHP_EOL.PHP_EOL;
+?>

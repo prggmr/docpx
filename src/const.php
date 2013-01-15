@@ -7,14 +7,23 @@
 
 
 if (!defined('DOCPX_INPUT')) {
+    /**
+     * The input path
+     */
     define('DOCPX_INPUT', dirname(realpath(__FILE__)).'/..');
 }
 
 if (!defined('DOCPX_OUTPUT')) {
+    /**
+     * Output path for the docs
+     */
     define('DOCPX_OUTPUT', getcwd());
 }
 
 if (!defined('DOCPX_DEBUG')) {
+    /**
+     * Enable Debug mode producing a more verbose processing.
+     */
     define('DOCPX_DEBUG', false);
 }
 

@@ -1,0 +1,117 @@
+.. /logger.php generated using docpx on 01/15/13 04:41pm
+
+
+docpx\task
+==========
+
+.. function:: docpx\task($message)
+
+
+    Logs a message as a task.
+
+    :param string $message: Message to log.
+
+    :rtype: void 
+
+
+
+docpx\warning
+=============
+
+.. function:: docpx\warning($message)
+
+
+    Logs a message as a warning.
+
+    :param string $message: Message to log.
+
+    :rtype: void 
+
+
+
+docpx\error
+===========
+
+.. function:: docpx\error($message)
+
+
+    Logs a message as a error.
+
+    :param string $message: Message to log.
+
+    :rtype: void 
+
+
+
+docpx\info
+==========
+
+.. function:: docpx\info($message)
+
+
+    Logs a message as info.
+
+    :param string $message: Message to log.
+
+    :rtype: void 
+
+
+
+docpx\Logger
+============
+
+
+Logger
+
+Logs all activities docpx is performing.
+
+You should not call this class specifically, instead use the API functions.
+
+- task
+- warning
+- error
+- info
+
+
+
+Methods
+-------
+
+log
+===
+
+.. function:: log($message, [$type = 1001])
+
+
+    Stack of all log messages.
+
+
+
+
+
+
+Constants
+---------
+
+TASK
+====
+
+Task message, logged as a operation performed. Provides no indication
+on whether or not it was successful.
+
+ERROR
+=====
+
+Error message indicates an error during parsing, causing the doc
+generation to halt.
+
+WARN
+====
+
+Warning found during parsing which was recoverable.
+
+INFO
+====
+
+INFO message
+

@@ -1,0 +1,55 @@
+<?php
+/**
+ * Copyright 2010-12 Nickolas Whiting. All rights reserved.
+ * Use of this source code is governed by the Apache 2 license
+ * that can be found in the LICENSE file.
+ */
+
+$class_name = $class->get('name');
+// Output the Page title
+echo $class_name.PHP_EOL;
+echo str_repeat(RST_H2, strlen($class_name)).PHP_EOL;
+?>
+
+<?php
+
+$doc = $class->get('doc');
+
+if (is_array($doc)) {
+
+    echo PHP_EOL.sprintf(
+        '%s',
+        str_replace("\n", "\n", trim($doc['description']))
+    ).PHP_EOL.PHP_EOL;
+    if (is_array($doc['tags']) && count($tags) != 0) {
+        echo $this->template('tags.template', ['tags' => $doc['tags']]);
+    }
+}
+
+// Methods
+echo PHP_EOL.PHP_EOL;
+if (is_array($class->get('methods')) && count($class->get('methods')) > 0) {
+    $str = 'Methods';
+    echo $str.PHP_EOL;
+    echo str_repeat(RST_H3, strlen($str)).PHP_EOL.PHP_EOL; 
+    foreach ($class->get('methods') as $_method) {
+        echo $this->template('method.template', [
+            'class'  => $class,
+            'method' => $_method
+        ]);
+    }
+}
+
+// Constants
+echo PHP_EOL.PHP_EOL;
+if (is_array($class->get('const')) && count($class->get('const')) > 0) {
+    $str = 'Constants';
+    echo $str.PHP_EOL;
+    echo str_repeat(RST_H3, strlen($str)).PHP_EOL.PHP_EOL; 
+    foreach ($class->get('const') as $_const) {
+        echo $this->template('constant.template', [
+            'constant' => $_const
+        ]);
+    }
+}
+?>

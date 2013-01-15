@@ -106,19 +106,32 @@ class Doc {
                     }
                     break;
 
-                case $token->isFileConst():
-                    if (!isset($data['const'])) $data['const'] = array();
+                case $token->isFileConst() || $token->isClassConst():
                     // line number
                     $line = $token->getLineNumber();
                     $name = $this->getNextNonWhitespace()->getValue();
                     $value = $this->getNextNonWhitespace()->getValue();
-                    $data['const'][] = array(
+                    $const = new Data(array(
                         'name' => $name,
                         'doc' => $lastdoc,
                         'value' => $value,
                         'line' => $line
-                    );
+                    ));
                     $lastdoc = null;
+                    if ($class) {
+                        if (!$class->has('const')) {
+                            $class->set('const', []);
+                        }
+                        $class->set('const', array_merge(
+                            $class->get('const'), 
+                            [$const]
+                        ));
+                    } else {
+                        if (!isset($data['const'])) {
+                            $data['const'] = array();
+                        }
+                        $data['const'][] = $const;
+                    }
                     break;
 
                 case $token->isClass():
@@ -145,12 +158,14 @@ class Doc {
                     );
 
                     $classData = array(
-                        'name' => $name,
+                        'name' => (null === $namespace) ? $name :
+                            $namespace.'\\'.$name,
                         'line' => $token->getLineNumber(),
                         'doc' => $lastdoc,
                         'abstract' => $abstract,
                         'interface' => $interface,
-                        'final' => $final
+                        'final' => $final,
+                        'namespace' => $namespace
                     );
                     $class = new Data($classData);
                     $interface = false;
@@ -216,13 +231,15 @@ class Doc {
                         )
                     );
                     $fdata = array(
-                        'name' => $name,
+                        'name' => ($class) ? $name : (null === $namespace) ?
+                            $name : $namespace . '\\' . $name,
                         'doc' => $lastdoc,
                         'public' => $public,
                         'protected' => $protected,
                         'private' => $private,
                         'abstract' => $abstract,
-                        'final' => $final
+                        'final' => $final,
+                        'namespace' => $namespace
                     );
                     $abstract = false;
                     $final = false;

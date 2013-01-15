@@ -95,7 +95,7 @@ class Logger {
      */
     protected static $_log = array();
 
-    public static function log($message, $type = Log::TASK)
+    public static function log($message, $type = Logger::TASK)
     {
         static::$count++;
         if (!isset(static::$_log[$type])) {
