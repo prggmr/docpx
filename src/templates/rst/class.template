@@ -5,10 +5,14 @@
  * that can be found in the LICENSE file.
  */
 
+var_dump($class);
+exit;
+
 $class_name = $class->get('name');
+$output_name = str_replace('\\', '\\\\', $class_name);
 // Output the Page title
-echo $class_name.PHP_EOL;
-echo str_repeat(RST_H2, strlen($class_name)).PHP_EOL;
+echo $output_name.PHP_EOL;
+echo str_repeat(RST_H1, strlen($output_name)).PHP_EOL;
 ?>
 
 <?php
@@ -16,7 +20,6 @@ echo str_repeat(RST_H2, strlen($class_name)).PHP_EOL;
 $doc = $class->get('doc');
 
 if (is_array($doc)) {
-
     echo PHP_EOL.sprintf(
         '%s',
         str_replace("\n", "\n", trim($doc['description']))
@@ -26,12 +29,12 @@ if (is_array($doc)) {
     }
 }
 
-// Methods
-echo PHP_EOL.PHP_EOL;
 if (is_array($class->get('methods')) && count($class->get('methods')) > 0) {
+    // Methods
+    echo PHP_EOL.PHP_EOL;
     $str = 'Methods';
     echo $str.PHP_EOL;
-    echo str_repeat(RST_H3, strlen($str)).PHP_EOL.PHP_EOL; 
+    echo str_repeat(RST_H2, strlen($str)).PHP_EOL.PHP_EOL; 
     foreach ($class->get('methods') as $_method) {
         echo $this->template('method.template', [
             'class'  => $class,
@@ -40,9 +43,9 @@ if (is_array($class->get('methods')) && count($class->get('methods')) > 0) {
     }
 }
 
-// Constants
-echo PHP_EOL.PHP_EOL;
 if (is_array($class->get('const')) && count($class->get('const')) > 0) {
+    // Constants
+    echo PHP_EOL.PHP_EOL;
     $str = 'Constants';
     echo $str.PHP_EOL;
     echo str_repeat(RST_H3, strlen($str)).PHP_EOL.PHP_EOL; 

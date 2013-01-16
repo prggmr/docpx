@@ -54,8 +54,10 @@ if (count($params) > 0) {
 }
 
 // Output the Page title
-echo $func_name.PHP_EOL;
-echo str_repeat(RST_H2, strlen($func_name)).PHP_EOL;
+$output_name = str_replace('\\', '\\\\', $func_name);
+// Output the Page title
+echo $output_name.PHP_EOL;
+echo str_repeat(RST_H2, strlen($output_name)).PHP_EOL;
 ?>
 
 .. function:: <?=$func_name?>(<?=$params?>)

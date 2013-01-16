@@ -9,7 +9,7 @@ $constant_name = trim($constant->get('name'), "'\"");
 
 // Output the Page title
 echo $constant_name.PHP_EOL;
-echo str_repeat(RST_H2, strlen($constant_name)).PHP_EOL;
+echo str_repeat(RST_H4, strlen($constant_name)).PHP_EOL;
 ?>
 
 <?php

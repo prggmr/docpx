@@ -6,22 +6,28 @@
  */
 
 // Gather the function parameters
-$reflection = new ReflectionMethod(
-    $class->get('name'), 
-    $method->get('name')
-);
 $params = [];
-foreach ($reflection->getParameters() as $_param) {
-    $name = $_param->getName();
-    try {
-        $value = $_param->getDefaultValue();
+if (class_exists($class->get('name'))) {
+    try { 
+        $reflection = new ReflectionMethod(
+            $class->get('name'), 
+            $method->get('name')
+        );
+        foreach ($reflection->getParameters() as $_param) {
+            $name = $_param->getName();
+            try {
+                $value = $_param->getDefaultValue();
+            } catch (\Exception $e) {
+                $value = DOCPX_PARAM_NO_DEFAULT;
+            }
+            $params[] = [
+                'name' => $name,
+                'value' => $value
+            ];
+        }
     } catch (\Exception $e) {
-        $value = DOCPX_PARAM_NO_DEFAULT;
+        $params = [];
     }
-    $params[] = [
-        'name' => $name,
-        'value' => $value
-    ];
 }
 
 // Get the name
@@ -56,7 +62,7 @@ if (count($params) > 0) {
 
 // Output the Page title
 echo $func_name.PHP_EOL;
-echo str_repeat(RST_H2, strlen($func_name)).PHP_EOL;
+echo str_repeat(RST_H3, strlen($func_name)).PHP_EOL;
 ?>
 
 .. function:: <?=$func_name?>(<?=$params?>)

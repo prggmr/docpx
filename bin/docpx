@@ -20,7 +20,7 @@ $: docpx docpx/src docs
 $: docpx -d /home/prggmr/XPSPL/src /home/prggmr/docs/XPSPL/
 $: docpx --load-file=load.php /home/prggmr/XPSPL/src /home/prggmr/docs/XPSPL/
 ";
-
+ini_set('memory_limit', -1);
 date_default_timezone_set('UTC');
 array_shift($argv);
 if (count($argv) == 0) {
@@ -81,12 +81,12 @@ foreach ($options as $_i => $_arg) {
     if ($break) break;
 }
 
-if (false === $output || !is_writeable($output)) {
-    echo ('Invalid input');
+if (false === $input || !is_writeable($input)) {
+    echo ('Invalid input').PHP_EOL;
     exit(0);
 }
 if (false === $output || !is_writeable($output)) {
-    echo('Invalid output');
+    echo('Invalid output').PHP_EOL;
     exit(0);
 }
 
