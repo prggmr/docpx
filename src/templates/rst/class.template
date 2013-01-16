@@ -5,9 +5,6 @@
  * that can be found in the LICENSE file.
  */
 
-var_dump($class);
-exit;
-
 $class_name = $class->get('name');
 $output_name = str_replace('\\', '\\\\', $class_name);
 // Output the Page title

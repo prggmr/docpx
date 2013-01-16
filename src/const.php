@@ -43,7 +43,7 @@ define('VERBOSE', true);
  * Set to true to enable syntax error checking of files before
  * parsing the source.
  */
-define('VALIDATE', true);
+define('VALIDATE', false);
 /**
  * Set to true to enable recursively scanning directories for
  * files

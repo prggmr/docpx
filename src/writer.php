@@ -5,14 +5,14 @@ namespace docpx;
  * Use of this source code is governed by the Apache 2 license
  * that can be found in the LICENSE file.
  */
-
+interface Dog {}
 
 /**
  * Writer
  *
  * Writes out the documentation.
  */
-class Writer {
+class Writer extends \dog\cat\face\DogFace implements Dog {
 
     /**
      * Doc nodes ready to be written.
@@ -88,3 +88,7 @@ class Writer {
         return $template;
     }
 }
+
+namespace dog\cat\face;
+class DogFace {}
+

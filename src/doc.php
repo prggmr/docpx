@@ -184,10 +184,13 @@ class Doc {
                     break;
 
                 case $token->isExtends():
-                    //$class->set('extends', $this->getNextNonWhitespace()->getValue());
+                    if ($class) {
+                        $class->set('extends', $this->getNextClassName());
+                    }
                     break;
 
                 case $token->isImplements():
+                    task('Parsing implement declaration');
                     $interfaces = array();
                     // loop through the next set of string tokens and set as interfaces
                     $interfaces[] = $this->getNextNonWhitespace()->getValue();
@@ -218,7 +221,12 @@ class Doc {
                             break;
                         }
                     }
-                    $class->set('implements', $interfaces);
+                    if (!$class) {
+                        warning('Class Implement found with no class');
+                        continue;
+                    } else { 
+                        $class->set('implements', $interfaces);
+                    }
                     break;
 
                 case $token->isFunction():
@@ -295,9 +303,9 @@ class Doc {
     /**
      * Returns the next non-whitespace token found.
      *
-     * @return  object  docpx\Node
+     * @return  object  docpx\Token
      */
-    public function getNextNonWhitespace()
+    public function getNextNonWhitespace(/* ... */)
     {
         if (!$this->_tokens->next()->isWhitespace()) return $this->_tokens->current();
         while(true) {
@@ -308,5 +316,34 @@ class Doc {
                 }
             }
         }
+    }
+
+    /**
+     * Returns the next full class name.
+     *
+     * @return  object  docpx\Token 
+     */
+    public function getNextClassName(/* ... */)
+    {
+        $name = '';
+        while(true) {
+            $this->_tokens->next();
+            if ($this->_tokens->valid()) {
+                if ($this->_tokens->current()->isWhitespace()) {
+                    continue;
+                } elseif ($this->_tokens->current()->isString() || 
+                          $this->_tokens->current()->isNamespaceSeperator()) {
+                    $name .= $this->_tokens->current()->getValue();
+                    continue;
+                } else {
+                    $this->_tokens->prev();
+                    break;
+                }
+            } else {
+                $this->_tokens->prev();
+                break;
+            }
+        }
+        return $name;
     }
 }
