@@ -8,15 +8,19 @@
 .. <?=$file?> generated using docpx on <?=date('m/d/y h:ia').PHP_EOL.PHP_EOL?>
 
 <?php
-if (isset($doc['const'])) {
-    foreach ($doc['const'] as $_constant) {
-        echo $this->template('constant.template', [
-            'constant' => $_constant
+if (isset($doc['classes'])) {
+    echo "Classes".PHP_EOL;
+    echo str_repeat(RST_H1, strlen("Classes")).PHP_EOL;
+    foreach ($doc['classes'] as $_class) {
+        echo $this->template('class.template', [
+            'class' => $_class
         ]);
     }
 }
 
 if (isset($doc['functions'])) {
+    echo "Functions".PHP_EOL;
+    echo str_repeat(RST_H1, strlen("Functions")).PHP_EOL;
     foreach ($doc['functions'] as $_function) {
         echo $this->template('function.template', [
             'function' => $_function
@@ -24,10 +28,12 @@ if (isset($doc['functions'])) {
     }
 }
 
-if (isset($doc['classes'])) {
-    foreach ($doc['classes'] as $_class) {
-        echo $this->template('class.template', [
-            'class' => $_class
+if (isset($doc['const'])) {
+    echo "Constants".PHP_EOL;
+    echo str_repeat(RST_H1, strlen("Constants")).PHP_EOL;
+    foreach ($doc['const'] as $_constant) {
+        echo $this->template('constant.template', [
+            'constant' => $_constant
         ]);
     }
 }
