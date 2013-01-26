@@ -8,7 +8,9 @@
 .. <?=$file?> generated using docpx on <?=date('m/d/y h:ia').PHP_EOL.PHP_EOL?>
 
 <?php
+$hasdoc = false;
 if (isset($doc['const'])) {
+    $hasdoc = true;
     foreach ($doc['const'] as $_constant) {
         echo $this->template('constant.template', [
             'constant' => $_constant
@@ -17,6 +19,7 @@ if (isset($doc['const'])) {
 }
 
 if (isset($doc['functions'])) {
+    $hasdoc = true;
     foreach ($doc['functions'] as $_function) {
         echo $this->template('function.template', [
             'function' => $_function
@@ -26,8 +29,13 @@ if (isset($doc['functions'])) {
 
 if (isset($doc['classes'])) {
     foreach ($doc['classes'] as $_class) {
+    $hasdoc = true;
         echo $this->template('class.template', [
             'class' => $_class
         ]);
     }
+}
+
+if (!$hasdoc) {
+    echo "Uh-oh ... it seems I have forgotten to document this page hohoho!";
 }

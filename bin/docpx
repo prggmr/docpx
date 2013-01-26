@@ -119,5 +119,5 @@ if ($version) {
 
 $compiler = new \docpx\Compiler();
 $compiler->compile($input);
-$writer = new \docpx\Writer($compiler->getDocs());
+$writer = new \docpx\Writer($compiler);
 $writer->write($output);

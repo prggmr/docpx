@@ -184,7 +184,9 @@ class Doc {
                     break;
 
                 case $token->isExtends():
-                    //$class->set('extends', $this->getNextNonWhitespace()->getValue());
+                    if ($class) {
+                        $class->set('extends', $this->getNextNonWhitespace()->getValue());
+                    }
                     break;
 
                 case $token->isImplements():
@@ -295,7 +297,7 @@ class Doc {
     /**
      * Returns the next non-whitespace token found.
      *
-     * @return  object  docpx\Node
+     * @return  object  docpx\Token
      */
     public function getNextNonWhitespace()
     {
@@ -309,4 +311,10 @@ class Doc {
             }
         }
     }
+
+    /**
+     * Returns the next class name found.
+     *
+     * @return  object  docpx\Token
+     */
 }

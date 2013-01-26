@@ -10,38 +10,51 @@ namespace docpx;
 /**
  * Writer
  *
- * Writes out the documentation.
+ * Writes a \docpx\Doc object into a beautiful human-readable format.
  */
 class Writer {
 
     /**
-     * Doc nodes ready to be written.
+     * Compiler ready to be written.
      *
      * @var  array
      */
-    protected $_docs = null;
+    protected $_compiler = null;
+
+    /**
+     * Template style to use for writing documents.
+     *
+     * @var  string
+     */
+    protected $_template = null;
 
     /**
      * Prepares the writer.
      *
-     * @param  array  $docs  Array of Doc nodes.
+     * On constructing the Doc object which must be written is provided.
+     *
+     * Optionally the template style can be provided also.
+     *
+     * @param  object  $compiler  \docpx\Compiler
+     * @param  string  $template  Template style to write with.
      *
      * @return  void
      */
-    public function __construct($docs)
+    public function __construct($compiler, $template = 'rst')
     {
-        require_once 'templates/rst/config.php';
-        $this->_docs = $docs;
+        require_once 'templates/'.$template.'/config.template';
+        $this->_compiler = $compiler;
+        $this->_template = $template;
     }
 
     /**
-     * Writes the output.
+     * Writes the human read-able source to the given path.
      *
      * @param  string  $path  Path to write the output.
      */
     public function write($path)
     {
-        foreach ($this->_docs as $_file => $_doc) {
+        foreach ($this->_compiler->getDocs() as $_file => $_doc) {
             $template = $this->template('file.template', [
                 'file' => $_file,
                 'doc' => $_doc
@@ -71,10 +84,10 @@ class Writer {
     }
 
     /**
-     * Parses a template file.
+     * Parses a template file and returns the contents.
      *
      * @param  string  $template  Template file to parse
-     * @param  array  $vars  Variables to assign the template.
+     * @param  array  $vars  Variables to declare in the template context.
      *
      * @return  string  Parsed template file.
      */
@@ -82,7 +95,7 @@ class Writer {
     {
         extract($vars);
         ob_start();
-        include 'templates/rst/'.$template;
+        include 'templates/'.$this->_template.'/'.$template;
         $template = ob_get_contents();
         ob_end_clean();
         return $template;

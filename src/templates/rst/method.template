@@ -5,23 +5,30 @@
  * that can be found in the LICENSE file.
  */
 
+if ($method->get('name') == 'use' || $method->get('name') == '$node' || $method->get('name') == '$_event' || $method->get('name') == '$a') {
+    var_dump(strstr($method->get('name'), '$'));
+    return;
+}
+
 // Gather the function parameters
-$reflection = new ReflectionMethod(
-    $class->get('name'), 
-    $method->get('name')
-);
-$params = [];
-foreach ($reflection->getParameters() as $_param) {
-    $name = $_param->getName();
-    try {
-        $value = $_param->getDefaultValue();
-    } catch (\Exception $e) {
-        $value = DOCPX_PARAM_NO_DEFAULT;
+if (class_exists($class->get('name'))) {
+    $reflection = new ReflectionMethod(
+        $class->get('name'), 
+        $method->get('name')
+    );
+    $params = [];
+    foreach ($reflection->getParameters() as $_param) {
+        $name = $_param->getName();
+        try {
+            $value = $_param->getDefaultValue();
+        } catch (\Exception $e) {
+            $value = DOCPX_PARAM_NO_DEFAULT;
+        }
+        $params[] = [
+            'name' => $name,
+            'value' => $value
+        ];
     }
-    $params[] = [
-        'name' => $name,
-        'value' => $value
-    ];
 }
 
 // Get the name
