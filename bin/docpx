@@ -10,17 +10,17 @@ Options
 -------
   -d/--debug   Turn on debug mode, generating more verbose output.
   -h/--help    Display this help message.
-  --load-file  File to load source for generating Reflection information.
-  --update     Updates docpx to the latest stable version.
+  --load       File to load code for functions/method parameters.
+  --update     Updates docpx to the latest master version.
   -v/--version Display the current docpx version.
 
 Examples
 --------
 $: docpx docpx/src docs
 $: docpx -d /home/prggmr/XPSPL/src /home/prggmr/docs/XPSPL/
-$: docpx --load-file=load.php /home/prggmr/XPSPL/src /home/prggmr/docs/XPSPL/
+$: docpx --load load.php /home/prggmr/XPSPL/src /home/prggmr/docs/XPSPL/
 ";
-
+ini_set('memory_limit', -1);
 date_default_timezone_set('UTC');
 array_shift($argv);
 if (count($argv) == 0) {
@@ -55,9 +55,10 @@ foreach ($options as $_i => $_arg) {
             break;
         case 'd':
         case 'debug':
+            define('LOGGER_LOG_LEVEL', 1);
             define('DOCPX_DEBUG', true);
             break;
-        case 'load-file':
+        case 'load':
             require_once $_arg;
             break;
         case 'update':
@@ -81,12 +82,12 @@ foreach ($options as $_i => $_arg) {
     if ($break) break;
 }
 
-if (false === $output || !is_writeable($output)) {
-    echo ('Invalid input');
+if (false === $input || !is_readable($input)) {
+    echo ('Invalid input').PHP_EOL;
     exit(0);
 }
 if (false === $output || !is_writeable($output)) {
-    echo('Invalid output');
+    echo('Invalid output').PHP_EOL;
     exit(0);
 }
 
@@ -94,6 +95,11 @@ define('DOCPX_INPUT', $input);
 define('DOCPX_OUTPUT', $output);
 
 start:
+
+if (!defined('LOGGER_LOG_LEVEL')) {
+    define('LOGGER_LOG_LEVEL', 2);
+}
+
 
 $path = dirname(realpath(__FILE__));
 /**
@@ -110,6 +116,13 @@ require_once $path.'/../src/compiler.php';
 require_once $path.'/../src/writer.php';
 require_once $path.'/../src/utils.php';
 unset($path);
+
+$formatter = new Formatter(
+    '[{date}] [{str_code}] {message}'.PHP_EOL
+);
+logger(DOCPX_LOG)->add_handler(new Handler(
+    $formatter, STDOUT
+));
 
 if ($version) {
     echo 'docpx v'.DOCPX_VERSION.PHP_EOL;

@@ -6,7 +6,6 @@ namespace docpx;
  * that can be found in the LICENSE file.
  */
 
-
 /**
  * Writer
  *

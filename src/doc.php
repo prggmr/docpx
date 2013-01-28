@@ -65,7 +65,7 @@ class Doc {
         $private = false;
 
         foreach ($this->_tokens as $token) {
-            warning($token->getType());
+            logger(DOCPX_LOG)->debug($token->getType());
             // get the token type
             switch (true) {
 
@@ -81,7 +81,7 @@ class Doc {
                         $namespace .= '\\'.$this->_tokens->next()->getValue();
                     }
                     $data['namespace'] = $namespace;
-                    task(
+                    logger(DOCPX_LOG)->info(
                         sprintf(
                             'Entering namespace %s',
                             $namespace
@@ -96,7 +96,7 @@ class Doc {
                     // check for a license and file doc blocks as the first
                     // encountered
                     if (HAS_LICENSE_DOC && !$hasLicenseDoc) {
-                        info(
+                        logger(DOCPX_LOG)->info(
                             'License docblock parsed'
                         );
                         // license doc
@@ -137,7 +137,7 @@ class Doc {
                 case $token->isClass():
                     // are we currently inside a class?
                     if ($class) {
-                        task(
+                        logger(DOCPX_LOG)->info(
                             sprintf(
                                 "Leaving class %s",
                                 $class->get('name')
@@ -151,7 +151,7 @@ class Doc {
                         $class = null;
                     }
                     $name = $this->getNextNonWhitespace()->getValue();
-                    task(
+                    logger(DOCPX_LOG)->info(
                         sprintf(
                             "Entering class %s", $name
                         )
@@ -185,11 +185,12 @@ class Doc {
 
                 case $token->isExtends():
                     if ($class) {
-                        $class->set('extends', $this->getNextNonWhitespace()->getValue());
+                        $class->set('extends', $this->getNextClassName());
                     }
                     break;
 
                 case $token->isImplements():
+                    logger(DOCPX_LOG)->info('Parsing implement declaration');
                     $interfaces = array();
                     // loop through the next set of string tokens and set as interfaces
                     $interfaces[] = $this->getNextNonWhitespace()->getValue();
@@ -220,13 +221,21 @@ class Doc {
                             break;
                         }
                     }
-                    $class->set('implements', $interfaces);
+                    if (!$class) {
+                        logger(DOCPX_LOG)->warning('Class Implement found with no class');
+                        continue;
+                    } else { 
+                        $class->set('implements', $interfaces);
+                    }
                     break;
 
                 case $token->isFunction():
                     $name = $this->getNextNonWhitespace()->getValue();
+                    if ($this->isAnonymous($name)) {
+                        continue;
+                    }
                     // are we currently inside a function?
-                    task(
+                    logger(DOCPX_LOG)->info(
                         sprintf(
                             "Parsing function %s",
                             $name
@@ -279,7 +288,7 @@ class Doc {
                     break;
                 
                 default:
-                    warning($token->getType());
+                    logger(DOCPX_LOG)->debug($token->getType());
                     break;
             }
         }
@@ -299,7 +308,7 @@ class Doc {
      *
      * @return  object  docpx\Token
      */
-    public function getNextNonWhitespace()
+    public function getNextNonWhitespace(/* ... */)
     {
         if (!$this->_tokens->next()->isWhitespace()) return $this->_tokens->current();
         while(true) {
@@ -315,6 +324,45 @@ class Doc {
     /**
      * Returns the next class name found.
      *
-     * @return  object  docpx\Token
+     * @return  string
      */
+    public function getNextClassName(/* ... */)
+    {
+        $name = '';
+        while(true) {
+            $this->_tokens->next();
+            if ($this->_tokens->valid()) {
+                if ($this->_tokens->current()->isWhitespace()) {
+                    continue;
+                } elseif ($this->_tokens->current()->isString() || 
+                          $this->_tokens->current()->isNamespaceSeperator()) {
+                    $name .= $this->_tokens->current()->getValue();
+                    continue;
+                } else {
+                    $this->_tokens->prev();
+                    break;
+                }
+            } else {
+                $this->_tokens->prev();
+                break;
+            }
+        }
+        return $name;
+    }
+
+    /**
+     * Returns if the given name belongs to an anonymous function.
+     *
+     * @param  string  $name  Function name
+     *
+     * @return  boolean
+     */
+    public function isAnonymous($name) {
+        if ($name === 'use') {
+            return true;
+        }
+        if (stripos($name, '$') !== false) {
+            return true;
+        }
+    }
 }

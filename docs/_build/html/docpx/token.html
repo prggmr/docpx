@@ -1,0 +1,613 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>docpx\Token &mdash; Docpx 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Docpx 1.0.0 documentation" href="../index.html" />
+    <link rel="next" title="docpx\Tokens" href="tokens.html" />
+    <link rel="prev" title="docpx\task" href="logger.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tokens.html" title="docpx\Tokens"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="logger.html" title="docpx\task"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Docpx 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="docpx-token">
+<h1>docpx\Token<a class="headerlink" href="#docpx-token" title="Permalink to this headline">¶</a></h1>
+<p>Token</p>
+<p>Representation of a PHP token.</p>
+<div class="section" id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="construct">
+<h3>__construct<a class="headerlink" href="#construct" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="__construct">
+<tt class="descname">__construct</tt><big>(</big><em>$token</em><big>)</big><a class="headerlink" href="#__construct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a new node object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>$token</strong> (<em>array</em>) &#8211; Token array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="getvalue">
+<h3>getValue<a class="headerlink" href="#getvalue" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="getValue">
+<tt class="descname">getValue</tt><big>(</big><big>)</big><a class="headerlink" href="#getValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value of the token</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">mixed</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isnamespace">
+<h3>isNamespace<a class="headerlink" href="#isnamespace" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isNamespace">
+<tt class="descname">isNamespace</tt><big>(</big><big>)</big><a class="headerlink" href="#isNamespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a namespace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isnamespaceseperator">
+<h3>isNamespaceSeperator<a class="headerlink" href="#isnamespaceseperator" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isNamespaceSeperator">
+<tt class="descname">isNamespaceSeperator</tt><big>(</big><big>)</big><a class="headerlink" href="#isNamespaceSeperator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a namespace seperator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isdocblock">
+<h3>isDocBlock<a class="headerlink" href="#isdocblock" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isDocBlock">
+<tt class="descname">isDocBlock</tt><big>(</big><big>)</big><a class="headerlink" href="#isDocBlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a docblock.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isclass">
+<h3>isClass<a class="headerlink" href="#isclass" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isClass">
+<tt class="descname">isClass</tt><big>(</big><big>)</big><a class="headerlink" href="#isClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isvar">
+<h3>isVar<a class="headerlink" href="#isvar" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isVar">
+<tt class="descname">isVar</tt><big>(</big><big>)</big><a class="headerlink" href="#isVar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a variable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isstring">
+<h3>isString<a class="headerlink" href="#isstring" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isString">
+<tt class="descname">isString</tt><big>(</big><big>)</big><a class="headerlink" href="#isString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isstatic">
+<h3>isStatic<a class="headerlink" href="#isstatic" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isStatic">
+<tt class="descname">isStatic</tt><big>(</big><big>)</big><a class="headerlink" href="#isStatic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a static declaration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isfunction">
+<h3>isFunction<a class="headerlink" href="#isfunction" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isFunction">
+<tt class="descname">isFunction</tt><big>(</big><big>)</big><a class="headerlink" href="#isFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a function or class method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="ispublic">
+<h3>isPublic<a class="headerlink" href="#ispublic" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isPublic">
+<tt class="descname">isPublic</tt><big>(</big><big>)</big><a class="headerlink" href="#isPublic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a public declaration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isprivate">
+<h3>isPrivate<a class="headerlink" href="#isprivate" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isPrivate">
+<tt class="descname">isPrivate</tt><big>(</big><big>)</big><a class="headerlink" href="#isPrivate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a private declaration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isprotected">
+<h3>isProtected<a class="headerlink" href="#isprotected" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isProtected">
+<tt class="descname">isProtected</tt><big>(</big><big>)</big><a class="headerlink" href="#isProtected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a protected declaration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isuse">
+<h3>isUse<a class="headerlink" href="#isuse" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isUse">
+<tt class="descname">isUse</tt><big>(</big><big>)</big><a class="headerlink" href="#isUse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a namespace use reference declaration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isinterface">
+<h3>isInterface<a class="headerlink" href="#isinterface" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isInterface">
+<tt class="descname">isInterface</tt><big>(</big><big>)</big><a class="headerlink" href="#isInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a interface decleration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isabstract">
+<h3>isAbstract<a class="headerlink" href="#isabstract" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isAbstract">
+<tt class="descname">isAbstract</tt><big>(</big><big>)</big><a class="headerlink" href="#isAbstract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a abstract decleration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isfinal">
+<h3>isFinal<a class="headerlink" href="#isfinal" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isFinal">
+<tt class="descname">isFinal</tt><big>(</big><big>)</big><a class="headerlink" href="#isFinal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a final decleration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isclassconst">
+<h3>isClassConst<a class="headerlink" href="#isclassconst" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isClassConst">
+<tt class="descname">isClassConst</tt><big>(</big><big>)</big><a class="headerlink" href="#isClassConst" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a class constant decleration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isfileconst">
+<h3>isFileConst<a class="headerlink" href="#isfileconst" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isFileConst">
+<tt class="descname">isFileConst</tt><big>(</big><big>)</big><a class="headerlink" href="#isFileConst" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a file constant decleration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isopenbracket">
+<h3>isOpenBracket<a class="headerlink" href="#isopenbracket" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isOpenBracket">
+<tt class="descname">isOpenBracket</tt><big>(</big><big>)</big><a class="headerlink" href="#isOpenBracket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is an opening brace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="getlinenumber">
+<h3>getLineNumber<a class="headerlink" href="#getlinenumber" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="getLineNumber">
+<tt class="descname">getLineNumber</tt><big>(</big><big>)</big><a class="headerlink" href="#getLineNumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns line number the token is on wihin the source.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="iswhitespace">
+<h3>isWhitespace<a class="headerlink" href="#iswhitespace" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isWhitespace">
+<tt class="descname">isWhitespace</tt><big>(</big><big>)</big><a class="headerlink" href="#isWhitespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is whitespace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isenscapedwhitespace">
+<h3>isEnscapedWhitespace<a class="headerlink" href="#isenscapedwhitespace" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isEnscapedWhitespace">
+<tt class="descname">isEnscapedWhitespace</tt><big>(</big><big>)</big><a class="headerlink" href="#isEnscapedWhitespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is enscaped whitespace string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isextends">
+<h3>isExtends<a class="headerlink" href="#isextends" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isExtends">
+<tt class="descname">isExtends</tt><big>(</big><big>)</big><a class="headerlink" href="#isExtends" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a class extension identifier.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isimplements">
+<h3>isImplements<a class="headerlink" href="#isimplements" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isImplements">
+<tt class="descname">isImplements</tt><big>(</big><big>)</big><a class="headerlink" href="#isImplements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a interface implement identifier.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="isenscapedstring">
+<h3>isEnscapedString<a class="headerlink" href="#isenscapedstring" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="isEnscapedString">
+<tt class="descname">isEnscapedString</tt><big>(</big><big>)</big><a class="headerlink" href="#isEnscapedString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if token is a enscaped string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">boolean True | False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="gettype">
+<h3>getType<a class="headerlink" href="#gettype" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="getType">
+<tt class="descname">getType</tt><big>(</big><big>)</big><a class="headerlink" href="#getType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the string type of the token.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">docpx\Token</a><ul>
+<li><a class="reference internal" href="#methods">Methods</a><ul>
+<li><a class="reference internal" href="#construct">__construct</a></li>
+<li><a class="reference internal" href="#getvalue">getValue</a></li>
+<li><a class="reference internal" href="#isnamespace">isNamespace</a></li>
+<li><a class="reference internal" href="#isnamespaceseperator">isNamespaceSeperator</a></li>
+<li><a class="reference internal" href="#isdocblock">isDocBlock</a></li>
+<li><a class="reference internal" href="#isclass">isClass</a></li>
+<li><a class="reference internal" href="#isvar">isVar</a></li>
+<li><a class="reference internal" href="#isstring">isString</a></li>
+<li><a class="reference internal" href="#isstatic">isStatic</a></li>
+<li><a class="reference internal" href="#isfunction">isFunction</a></li>
+<li><a class="reference internal" href="#ispublic">isPublic</a></li>
+<li><a class="reference internal" href="#isprivate">isPrivate</a></li>
+<li><a class="reference internal" href="#isprotected">isProtected</a></li>
+<li><a class="reference internal" href="#isuse">isUse</a></li>
+<li><a class="reference internal" href="#isinterface">isInterface</a></li>
+<li><a class="reference internal" href="#isabstract">isAbstract</a></li>
+<li><a class="reference internal" href="#isfinal">isFinal</a></li>
+<li><a class="reference internal" href="#isclassconst">isClassConst</a></li>
+<li><a class="reference internal" href="#isfileconst">isFileConst</a></li>
+<li><a class="reference internal" href="#isopenbracket">isOpenBracket</a></li>
+<li><a class="reference internal" href="#getlinenumber">getLineNumber</a></li>
+<li><a class="reference internal" href="#iswhitespace">isWhitespace</a></li>
+<li><a class="reference internal" href="#isenscapedwhitespace">isEnscapedWhitespace</a></li>
+<li><a class="reference internal" href="#isextends">isExtends</a></li>
+<li><a class="reference internal" href="#isimplements">isImplements</a></li>
+<li><a class="reference internal" href="#isenscapedstring">isEnscapedString</a></li>
+<li><a class="reference internal" href="#gettype">getType</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="logger.html"
+                        title="previous chapter">docpx\task</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tokens.html"
+                        title="next chapter">docpx\Tokens</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/docpx/token.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tokens.html" title="docpx\Tokens"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="logger.html" title="docpx\task"
+             >previous</a> |</li>
+        <li><a href="../index.html">Docpx 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Nickolas C. Whiting.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

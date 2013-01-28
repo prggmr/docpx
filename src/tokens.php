@@ -38,7 +38,7 @@ class Tokens implements \Iterator, \Countable {
     public function __construct($file)
     {
         if (!file_exists($file)) {
-            error(sprintf(
+            logger(DOCPX_LOG)->error(sprintf(
                 'Failed to locate source file "%s"; halting compiler',
                 $file));
         }
@@ -47,7 +47,7 @@ class Tokens implements \Iterator, \Countable {
             exec('php -l '.escapeshellarg($file), $output, $result);
 
             if ($result != 0) {
-                warning(sprintf(
+                logger(DOCPX_LOG)->warning(sprintf(
                     'The file "%s" could not be parsed as it contains errors skipping',
                     $file
                 ));
@@ -58,7 +58,7 @@ class Tokens implements \Iterator, \Countable {
         $source = file_get_contents($file);
         $tokens = token_get_all($source);
 
-        task(
+        logger(DOCPX_LOG)->debug(
             sprintf(
                 'Tokenizing file "%s"',
                 $file
@@ -71,7 +71,7 @@ class Tokens implements \Iterator, \Countable {
             }
         }
 
-        task(
+        logger(DOCPX_LOG)->debug(
             sprintf(
                 'Token generation for file "%s" complete',
                 $file

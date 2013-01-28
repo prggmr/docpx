@@ -43,7 +43,7 @@ define('VERBOSE', true);
  * Set to true to enable syntax error checking of files before
  * parsing the source.
  */
-define('VALIDATE', true);
+define('VALIDATE', false);
 /**
  * Set to true to enable recursively scanning directories for
  * files
@@ -82,7 +82,10 @@ define('EXCLUDE_PRIVATE', false);
  * Parameter no default value
  */
 define('DOCPX_PARAM_NO_DEFAULT', 0x216e6f5f64656661756c7421);
-
+/**
+ * Docpx Logger
+ */
+define('DOCPX_LOG', 'docpx_logger');
 /**
  * Using Windows
  */

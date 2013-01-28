@@ -40,8 +40,12 @@ PHP_EOL.$title.PHP_EOL
                     trim($_block['type']),
                     trim($_block['name'])
                 ) :
-            trim($_block['type']),
-            trim($_block['text'])
+            (isset($_block['type'])) ?
+                trim($_block['type']) :
+                null,
+            (isset($_block['text'])) ?
+                trim($_block['text']) :
+                null
         );
     }
     echo PHP_EOL;

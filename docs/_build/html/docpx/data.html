@@ -1,0 +1,219 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>docpx\Data &mdash; Docpx 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Docpx 1.0.0 documentation" href="../index.html" />
+    <link rel="next" title="docpx\Doc" href="doc.html" />
+    <link rel="prev" title="docpx\Compiler" href="compiler.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="doc.html" title="docpx\Doc"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="compiler.html" title="docpx\Compiler"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Docpx 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="docpx-data">
+<h1>docpx\Data<a class="headerlink" href="#docpx-data" title="Permalink to this headline">¶</a></h1>
+<p>Data</p>
+<p>Data object stores information using simply key/value pairs through an OO
+architecture.</p>
+<div class="section" id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="construct">
+<h3>__construct<a class="headerlink" href="#construct" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="__construct">
+<tt class="descname">__construct</tt><big>(</big><span class="optional">[</span><em>$data = false</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#__construct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registry property, information is stored as a <cite>key</cite> -&gt; <cite>value</cite> pair.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="set">
+<h3>set<a class="headerlink" href="#set" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">set</tt><big>(</big><em>$key</em><span class="optional">[</span>, <em>$value = false</em><span class="optional">[</span>, <em>$overwrite = true</em><span class="optional">]</span><span class="optional">]</span><big>)</big></dt>
+<dd><dl class="docutils">
+<dt>Sets a variable.</dt>
+<dd><p class="first">Variables can be set using three different configurations, they can be
+set as an ordinary <cite>$key</cite>, <cite>$value</cite> pair, an array of <cite>$key</cite> =&gt; <cite>$value</cite>
+mappings which will be transversed, or finally as a &#8221;.&#8221; delimited string
+in the format of <cite>$key</cite>, <cite>$value</cite> which will be transformed into an array,
+these configurations can also be combined.</p>
+<dl class="docutils">
+<dt>&#64;param  mixed  $key  A string identifier, array of key -&gt; value mappings,</dt>
+<dd>or a &#8221;.&#8221; delimited string.</dd>
+</dl>
+<p>&#64;param  mixed  $value  Value of the <cite>$key</cite>.
+&#64;param  boolean  $overwrite  Overwrite existing key if exists</p>
+<p class="last">&#64;return  boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="get">
+<h3>get<a class="headerlink" href="#get" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">get</tt><big>(</big><em>$key</em><span class="optional">[</span>, <em>$options = false</em><span class="optional">]</span><big>)</big></dt>
+<dd><p>Returns a variable. The variable name can be
+provided as a single string of the variable or a &#8221;.&#8221; delimited string
+which maps to the array tree storing this variable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>$key</strong> (<em>string</em>) &#8211; A string of the variable name or a &#8221;.&#8221; delimited
+string containing the route of the array tree.</li>
+<li><strong>$options</strong> (<em>array</em>) &#8211; <p>An array of options to use while retrieving a
+variable from the cache. Avaliable options.</p>
+<p><cite>default</cite> - Default value to return if <cite>$key</cite> is not found.</p>
+<p><cite>tree</cite> - Not Implemented</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">mixed</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="has">
+<h3>has<a class="headerlink" href="#has" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">has</tt><big>(</big><em>$key</em><big>)</big></dt>
+<dd><p>Returns if a variable identified by <cite>$key</cite> exists in the registry.
+<cite>has</cite> works just as <cite>get</cite> and allows for identical <cite>$key</cite>
+configuration.
+This is a mirrored shorthand of (prggmr::get($key, array(&#8216;default&#8217; =&gt; false)) !== false);</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>A</strong> (<em>$key</em>) &#8211; string of the variable name or a &#8221;.&#8221; delimited
+string containing the route of the array tree.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">docpx\Data</a><ul>
+<li><a class="reference internal" href="#methods">Methods</a><ul>
+<li><a class="reference internal" href="#construct">__construct</a></li>
+<li><a class="reference internal" href="#set">set</a></li>
+<li><a class="reference internal" href="#get">get</a></li>
+<li><a class="reference internal" href="#has">has</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="compiler.html"
+                        title="previous chapter">docpx\Compiler</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="doc.html"
+                        title="next chapter">docpx\Doc</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/docpx/data.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="doc.html" title="docpx\Doc"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="compiler.html" title="docpx\Compiler"
+             >previous</a> |</li>
+        <li><a href="../index.html">Docpx 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Nickolas C. Whiting.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

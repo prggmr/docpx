@@ -31,9 +31,9 @@ class Compiler {
 
     public function __construct()
     {
-        info("Docpx - The PHP API Generator v".DOCPX_VERSION);
-        info("---------------------------------");
-        info("Author Nickolas Whiting");
+        logger(DOCPX_LOG)->info("Docpx - The PHP API Generator v".DOCPX_VERSION);
+        logger(DOCPX_LOG)->info("---------------------------------");
+        logger(DOCPX_LOG)->info("Author Nickolas Whiting");
     }
 
     /**
@@ -54,7 +54,7 @@ class Compiler {
             // are we recursive
             if (RECURSIVE) {
 
-                info(
+                logger(DOCPX_LOG)->info(
                     sprintf(
                         'Beginning Recursive Directory scan "%s"',
                         $path
@@ -66,7 +66,7 @@ class Compiler {
                 $files = new \RegexIterator($iterator, '/^.+\\'.EXTENSION.'/i', \RecursiveRegexIterator::GET_MATCH);
             } else {
 
-                info(
+                logger(DOCPX_LOG)->info(
                     sprintf(
                         'Beginning Directory scan "%s"',
                         $path
@@ -82,7 +82,7 @@ class Compiler {
             $files = $path;
         } else {
             // path not found
-            error(sprintf(
+            logger(DOCPX_LOG)->error(sprintf(
                 'Path "%s" not found'
             , $path));
         }
@@ -105,7 +105,7 @@ class Compiler {
                 );
             }
         } elseif (!isset($files)) {
-            error(
+            logger(DOCPX_LOG)->error(
                 "Failed to find any php source files"
             );
         } else {
@@ -115,14 +115,14 @@ class Compiler {
             );
         }
 
-        info("File parsing complete");
-        task("Beginning Doc parser");
+        logger(DOCPX_LOG)->info("File parsing complete");
+        logger(DOCPX_LOG)->debug("Beginning Doc parser");
 
         foreach ($this->docs as $_path => $_doc) {
             $this->docs[$_path] = $_doc->parse();
         }
 
-        info("Doc parsing complete");
+        logger(DOCPX_LOG)->info("Doc parsing complete");
     }
 
     /**
