@@ -32,7 +32,6 @@ class Compiler {
     public function __construct()
     {
         logger(DOCPX_LOG)->info("Docpx - The PHP API Generator v".DOCPX_VERSION);
-        logger(DOCPX_LOG)->info("---------------------------------");
         logger(DOCPX_LOG)->info("Author Nickolas Whiting");
     }
 

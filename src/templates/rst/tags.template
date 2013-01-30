@@ -26,7 +26,7 @@ foreach ($tags as $_tag => $_tags) {
                 $tag = '';
                 $str = 
 PHP_EOL.$title.PHP_EOL
-.str_repeat(RST_H3, strlen($title)).PHP_EOL
+.str_repeat(RST_H5, strlen($title)).PHP_EOL
 .'%s%s
 %s
 ';
