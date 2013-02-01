@@ -5,7 +5,7 @@
  * that can be found in the LICENSE file.
  */
 
-$type = 'Function - ' . $function->get('name');
+$type = 'Function - ' . str_replace('\\', '\\\\', $function->get('name'));
 echo $type.PHP_EOL;
 echo str_repeat(RST_H1, strlen($type)).PHP_EOL.PHP_EOL;
 // Gather the function parameters
@@ -55,12 +55,6 @@ if (count($params) > 0) {
 } else {
     $params = '';
 }
-
-// Output the Page title
-$output_name = str_replace('\\', '\\\\', $func_name);
-// Output the Page title
-echo $output_name.PHP_EOL;
-echo str_repeat(RST_H2, strlen($output_name)).PHP_EOL;
 ?>
 
 .. function:: <?=$func_name?>(<?=$params?>)
