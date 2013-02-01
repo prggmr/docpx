@@ -26,9 +26,10 @@ if (isset($doc['functions'])) {
 
 
 if (isset($doc['const'])) {
-    foreach ($doc['const'] as $_constant) {
-        echo $this->template('constant.template', [
-            'constant' => $_constant
-        ]);
-    }
+    echo $this->template('constant.template', [
+        'constant' => $doc['const']
+    ]);
 }
+?>
+
+Last updated on <?=date('m/d/y h:ia')?>

@@ -5,24 +5,23 @@
  * that can be found in the LICENSE file.
  */
 
-$constant_name = trim($constant->get('name'), "'\"");
-
-// Output the Page title
-echo $constant_name.PHP_EOL;
-echo str_repeat(RST_H2, strlen($constant_name)).PHP_EOL;
-?>
-
-<?php
-$doc = $constant->get('doc');
-
-if (is_array($doc)) {
-
-    echo sprintf(
-        '%s',
-        str_replace("\n", "\n", trim($doc['description']))
-    ).PHP_EOL.PHP_EOL;
-    if (is_array($doc['tags']) && count($tags) != 0) {
-        echo $this->template('tags.template', ['tags' => $doc['tags']]);
+$str = 'Constants';
+echo $str.PHP_EOL;
+echo str_repeat(RST_H3, strlen($str)).PHP_EOL.PHP_EOL; 
+foreach ($constant as $_constant) {
+    $constant_name = trim($_constant->get('name'), "'\"");
+    // Output the Page title
+    echo $constant_name.PHP_EOL;
+    echo str_repeat(RST_H4, strlen($constant_name)).PHP_EOL;
+    $doc = $_constant->get('doc');
+    if (is_array($doc)) {
+        echo sprintf(
+            '%s',
+            str_replace("\n", "\n", trim($doc['description']))
+        ).PHP_EOL.PHP_EOL;
+        if (is_array($doc['tags']) && count($tags) != 0) {
+            echo $this->template('tags.template', ['tags' => $doc['tags']]);
+        }
     }
 }
 ?>

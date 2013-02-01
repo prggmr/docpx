@@ -5,8 +5,9 @@
  * that can be found in the LICENSE file.
  */
 
-echo "Function";
-echo str_repeat(RST_H1, strlen("Function")).PHP_EOL.PHP_EOL;
+$type = 'Function - ' . $function->get('name');
+echo $type.PHP_EOL;
+echo str_repeat(RST_H1, strlen($type)).PHP_EOL.PHP_EOL;
 // Gather the function parameters
 try {
     $reflection = new ReflectionFunction($function->get('name'));

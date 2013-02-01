@@ -281,6 +281,16 @@ class Token {
     }
 
     /**
+     * Returns if token is a trait.
+     *
+     * @return  boolean  True | False otherwise
+     */
+    public function isTrait(/* ... */)
+    {
+        return $this->_token[0] === T_TRAIT;
+    }
+
+    /**
      * Returns the string type of the token.
      *
      * @return  string

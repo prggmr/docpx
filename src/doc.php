@@ -50,6 +50,7 @@ class Doc {
     public function parse(/* ... */)
     {
         $class = false;
+        $trait = false;
         $function = false;
         $data = array();
         $final = false;
@@ -135,6 +136,8 @@ class Doc {
                     break;
 
                 case $token->isClass():
+                case $token->isTrait():
+                case $token->isInterface():
                     // are we currently inside a class?
                     if ($class) {
                         logger(DOCPX_LOG)->info(
@@ -165,7 +168,9 @@ class Doc {
                         'abstract' => $abstract,
                         'interface' => $interface,
                         'final' => $final,
-                        'namespace' => $namespace
+                        'namespace' => $namespace,
+                        'trait' => $token->isTrait(),
+                        'interface' => $token->isInterface()
                     );
                     $class = new Data($classData);
                     $interface = false;

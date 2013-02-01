@@ -12,3 +12,4 @@ define('RST_H1', '*');
 define('RST_H2', '=');
 define('RST_H3', '-');
 define('RST_H4', '+');
+define('RST_H5', '#');

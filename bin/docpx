@@ -96,6 +96,10 @@ define('DOCPX_OUTPUT', $output);
 
 start:
 
+if (file_exists('.docpx')) {
+    require_once '.docpx';
+}
+
 if (!defined('LOGGER_LOG_LEVEL')) {
     define('LOGGER_LOG_LEVEL', 2);
 }
