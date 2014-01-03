@@ -1,0 +1,14 @@
+<?=str_replace('.php', '', array_pop(explode('/', $doc['file'])))?>
+
+<?=str_repeat('=', strlen(str_replace('.php', '', array_pop(explode('/', $doc['file'])))))?>
+
+PHP File @ <?=$doc['file']?>
+
+
+.. code-block:: php
+
+<?php
+$contents = str_replace("\n", "\n\t", file_get_contents(DOCPX_INPUT.$doc['file']));
+echo "\t".$contents;
+?>
+

@@ -5,13 +5,14 @@
  * that can be found in the LICENSE file.
  */
 ?>
-.. <?=$file?> generated using docpx on <?=date('m/d/y h:ia').PHP_EOL.PHP_EOL?>
+.. <?=$file?> generated using Docpx v<?=DOCPX_VERSION?> on <?=date('m/d/y h:ia').PHP_EOL.PHP_EOL?>
 
 <?php
 if (isset($doc['classes'])) {
     foreach ($doc['classes'] as $_class) {
         echo $this->template('class.template', [
-            'class' => $_class
+            'class' => $_class,
+            'doc' => $doc
         ]);
     }
 }
@@ -19,7 +20,8 @@ if (isset($doc['classes'])) {
 if (isset($doc['functions'])) {
     foreach ($doc['functions'] as $_function) {
         echo $this->template('function.template', [
-            'function' => $_function
+            'function' => $_function,
+            'doc' => $doc
         ]);
     }
 }
@@ -27,9 +29,17 @@ if (isset($doc['functions'])) {
 
 if (isset($doc['const'])) {
     echo $this->template('constant.template', [
-        'constant' => $doc['const']
+        'constant' => $doc['const'],
+        'doc' => $doc
     ]);
 }
+
+if (isset($doc['template']) && $doc['template'] === True) {
+    echo $this->template('template.template', [
+        'doc' => $doc
+    ]);
+}
+
 ?>
 
 Last updated on <?=date('m/d/y h:ia')?>

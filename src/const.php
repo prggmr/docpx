@@ -34,7 +34,7 @@ define('DOCPX_VERSION', '1.0.0');
 /**
  * Docpx mastermind
  */
-define('DOCPX_MASTERMIND', 'Nickolas C. Whiting');
+define('DOCPX_MASTERMIND', 'Nickolas Whiting');
 /**
  * Set to true to output all activity
  */

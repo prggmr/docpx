@@ -110,7 +110,9 @@ $path = dirname(realpath(__FILE__));
  * INCLUDE
  */
 require_once $path.'/../src/const.php';
-require_once $path.'/../src/logger.php';
+if (!function_exists("logger")) {
+    require_once $path.'/../src/logger.php';
+}
 require_once $path.'/../src/data.php';
 require_once $path.'/../src/doc.php';
 require_once $path.'/../src/docblock.php';
@@ -125,7 +127,7 @@ $formatter = new Formatter(
     '[{date}] [{str_code}] {message}'.PHP_EOL
 );
 logger(DOCPX_LOG)->add_handler(new Handler(
-    $formatter, STDOUT
+    $formatter, STDOUT, 2
 ));
 
 if ($version) {

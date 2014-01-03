@@ -99,7 +99,7 @@ class Compiler {
                 }
                 if ($cont) continue;
                 $this->docs[$this->getRealPath($_file[0])] = new Doc(
-                    $this->getRealPath($_file[0]), 
+                    $this->getRealPath($_file[0]),
                     new Tokens($_file[0])
                 );
             }
@@ -109,7 +109,7 @@ class Compiler {
             );
         } else {
             $this->docs[$files] = new Doc(
-                $this->getRealPath($files), 
+                $this->getRealPath($files),
                 new Tokens($files)
             );
         }

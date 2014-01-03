@@ -1,4 +1,5 @@
 <?php
+if (function_exists('logger')) {} else {
 /**
  * Copyright 2013 Nickolas Whiting. All rights reserved.
  * Use of this source code is governed by the Apache 2 license
@@ -18,12 +19,12 @@ if (!defined('LOGGER_LOG_LEVEL')) {
  * Returns a logger identified by the given name.
  *
  * If the logger does not exist it is created.
- * 
+ *
  * @param  string  $name  Name of the logger
  *
  * @return   object  Logger
  */
-function logger($name = null) 
+function logger($name = null)
 {
     if (null === $name) {
         return Logger::instance();
@@ -38,44 +39,44 @@ class Logger {
 
     /**
      * DEBUG
-     * 
-     * Detailed information, typically of interest only when diagnosing 
+     *
+     * Detailed information, typically of interest only when diagnosing
      * problems.
      */
     const DEBUG = 1;
     /**
      * INFO
-     * 
+     *
      * Confirmation that things are working as expected.
      */
     const INFO = 2;
     /**
-     * WARNING 
-     * 
+     * WARNING
+     *
      * An indication that something unexpected happened, or indicative of
-     * some problem in the near future (e.g. ‘disk space low’). 
-     *  
+     * some problem in the near future (e.g. ‘disk space low’).
+     *
      * The software is still working as expected.
      */
     const WARNING = 3;
     /**
      * ERROR
-     * 
-     * Due to a more serious problem, the software has not been able to 
+     *
+     * Due to a more serious problem, the software has not been able to
      * perform some function.
      */
     const ERROR = 4;
     /**
-     * CRITICAL   
-     * 
-     * A serious error, indicating that the program itself may be unable 
+     * CRITICAL
+     *
+     * A serious error, indicating that the program itself may be unable
      * to continue running.
      */
     const CRITICAL = 5;
 
     /**
      * Array of log handlers.
-     * 
+     *
      * @var
      */
     protected $_handlers = [];
@@ -87,7 +88,7 @@ class Logger {
 
     /**
      * Returns an instance of the singleton.
-     * 
+     *
      * Passes args to constructor
      */
     final public static function instance(/* ... */)
@@ -240,7 +241,7 @@ class Handler {
      *
      * @param  object  $formatter
      * @param  resource  $output  Output resource or file
-     * @param  integer  $level  Code level to log, anything greater than the 
+     * @param  integer  $level  Code level to log, anything greater than the
      *                          given code will be logged.
      *
      * @return  void
@@ -365,4 +366,5 @@ class Formatter {
  */
 function psprintf($str, $params) {
     return preg_replace('/{(\w+)}/e', '$params["\\1"]', $str);
+}
 }

@@ -269,7 +269,7 @@ class Token {
     {
         return $this->_token[0] === T_IMPLEMENTS;
     }
-    
+
     /**
      * Returns if token is a enscaped string.
      *
@@ -298,5 +298,22 @@ class Token {
     public function getType(/* ... */)
     {
         return token_name($this->_token[0]);
+    }
+
+    /**
+     *
+     */
+    public function __call($method, $args)
+    {
+        $const = preg_split('/(?=[A-Z])/', $method);
+        if ($const[0] === 'is') {
+            array_shift($const);
+        }
+        $const = array_map('strtoupper', $const);
+        $method_name = 'T_'.implode('_', $const);
+        if (!defined($method_name)) {
+            throw new \RuntimeException('Could not find PHP Token '.$method_name);
+        }
+        return $this->_token[0] === constant($method_name);
     }
 }

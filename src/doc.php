@@ -52,7 +52,9 @@ class Doc {
         $class = false;
         $trait = false;
         $function = false;
-        $data = array();
+        $data = array(
+            'file' => $this->_file
+        );
         $final = false;
         $comments = null;
         $lastdoc = null;
@@ -64,19 +66,42 @@ class Doc {
         $pubic = false;
         $protected = false;
         $private = false;
+        $is_template_file = false;
+        $htmltags = 0;
+        $opentags = 0;
+        $closetags = 0;
 
         foreach ($this->_tokens as $token) {
             logger(DOCPX_LOG)->debug($token->getType());
             // get the token type
             switch (true) {
 
+                default:
+                    logger(DOCPX_LOG)->debug($token->getType());
+
+                case $token->isOpenTag():
+                    $opentags = $opentags + 1;
+                    break;
+
+                case $token->isCloseTag():
+                    $closetags = $closetags + 1;
+                    break;
+
+                case $token->isInlineHtml():
+                    $is_template_file = True;
+                    $htmltags = $htmltags + 1;
+                    break;
+
+                case $token->isOpenTagWithEcho():
+                    $is_template_file = True;
+                    break;
+
                 case $token->isFinal():
                     $final = true;
                     break;
 
                 case $token->isNamespace():
-                    while(!$this->_tokens->next()->isString()){
-                    }
+                    while(!$this->_tokens->next()->isString()){}
                     $namespace = $this->_tokens->current()->getValue();
                     while($this->_tokens->next()->isNamespaceSeperator()) {
                         $namespace .= '\\'.$this->_tokens->next()->getValue();
@@ -88,7 +113,7 @@ class Doc {
                             $namespace
                         )
                     );
-                break;
+                    break;
 
                 case $token->isDocBlock():
                     $docblock = Docblock::comment($token->getValue());
@@ -124,7 +149,7 @@ class Doc {
                             $class->set('const', []);
                         }
                         $class->set('const', array_merge(
-                            $class->get('const'), 
+                            $class->get('const'),
                             [$const]
                         ));
                     } else {
@@ -229,7 +254,7 @@ class Doc {
                     if (!$class) {
                         logger(DOCPX_LOG)->warning('Class Implement found with no class');
                         continue;
-                    } else { 
+                    } else {
                         $class->set('implements', $interfaces);
                     }
                     break;
@@ -268,7 +293,7 @@ class Doc {
                             $class->set('methods', []);
                         }
                         $class->set('methods', array_merge(
-                            $class->get('methods'), 
+                            $class->get('methods'),
                             [$function]
                         ));
                     } else {
@@ -279,21 +304,17 @@ class Doc {
                         $function = false;
                     }
                     break;
-                
+
                 case $token->isPublic():
                     $public = true;
                     break;
-                
+
                 case $token->isProtected():
                     $protected = true;
                     break;
-                
+
                 case $token->isPrivate():
                     $private = true;
-                    break;
-                
-                default:
-                    logger(DOCPX_LOG)->debug($token->getType());
                     break;
             }
         }
@@ -303,6 +324,12 @@ class Doc {
                 $data['classes'] = array();
             }
             $data['classes'][] = $class;
+        }
+
+        if ($is_template_file || $opentags > 2 || $closetags > 2) {
+            $data['template'] = True;
+        } else {
+            $data['template'] = False;
         }
 
         return $data;
@@ -339,7 +366,7 @@ class Doc {
             if ($this->_tokens->valid()) {
                 if ($this->_tokens->current()->isWhitespace()) {
                     continue;
-                } elseif ($this->_tokens->current()->isString() || 
+                } elseif ($this->_tokens->current()->isString() ||
                           $this->_tokens->current()->isNamespaceSeperator()) {
                     $name .= $this->_tokens->current()->getValue();
                     continue;

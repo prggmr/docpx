@@ -59,25 +59,33 @@ class Writer {
                 'doc' => $_doc
             ]);
             $write_path = $path;
-            $name = explode("/", $_file);
+            $name = explode("/",
+                (strpos($_file, '/') === 0) ?
+                    substr_replace($_file, '', 0, 1) : $_file
+            );
+            array_unshift($name, $path);
             $file = array_pop($name);
-            if (count($name) != 0) {
-                $total_dir = '';
-                foreach ($name as $_dir) {
-                    $total_dir = '/'.$_dir;
-                    if (!is_dir($write_path . $total_dir)) {
-                        mkdir($write_path . $total_dir);
+            logger(DOCPX_LOG)->info(sprintf('Building directory %s', implode('/', $name)));
+            $full_path = implode('/', $name);
+            if (!is_dir($full_path)) {
+                $tmp = [];
+                foreach ($name as $_path) {
+                    $tmp[] = $_path;
+                    if (!is_dir(implode('/', $tmp))) {
+                        logger(DOCPX_LOG)->info(sprintf('Making directory %s', implode('/', $tmp)));
+                        mkdir(implode('/', $tmp));
                     }
                 }
-                $write_path = $write_path . $total_dir;
+                @mkdir($full_path);
             }
             $output_name = explode('.', $file);
             array_pop($output_name);
             $name = sprintf(
                 '%s/%s.rst',
-                $write_path,
+                $full_path,
                 array_pop($output_name)
             );
+            logger(DOCPX_LOG)->info(sprintf('Writing file %s', $name));
             file_put_contents($name, $template);
         }
     }
