@@ -128,7 +128,7 @@ class Doc {
                         // license doc
                         $data['licensedoc'] = $docblock;
                         $hasLicenseDoc = true;
-                        $lastdoc = null;
+                        // $lastdoc = null;
                     }
                     break;
 

@@ -25,11 +25,9 @@ date_default_timezone_set('UTC');
  *
  * Docpx is a PHP 5.3+ API Documentation generator that aims to be
  * lightweight, fast and support all current versions of PHP.
- * 
+ *
  * @author  Nickolas Whiting <me@nwhiting.com>
  * @package  Docpx
  * @version  1.0.0
  * @copyright  Copyright (c) 2011, Nickolas Whiting
  */
-
-
