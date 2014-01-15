@@ -123,10 +123,10 @@ require_once $path.'/../src/writer.php';
 require_once $path.'/../src/utils.php';
 unset($path);
 
-$formatter = new Formatter(
+$formatter = new \logger\Formatter(
     '[{date}] [{str_code}] {message}'.PHP_EOL
 );
-logger(DOCPX_LOG)->add_handler(new Handler(
+logger(DOCPX_LOG)->add_handler(new \logger\Handler(
     $formatter, STDOUT, 2
 ));
 

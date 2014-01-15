@@ -5,7 +5,7 @@
  * that can be found in the LICENSE file.
  */
 ?>
-.. <?=$file?> generated using Docpx v<?=DOCPX_VERSION?> on <?=date('m/d/y h:ia').PHP_EOL.PHP_EOL?>
+.. <?=$file?> generated using docpx v<?=DOCPX_VERSION?> on <?=date('m/d/y h:ia').PHP_EOL.PHP_EOL?>
 
 <?php
 if (isset($doc['classes'])) {
@@ -34,7 +34,7 @@ if (isset($doc['const'])) {
     ]);
 }
 
-if (isset($doc['template']) && $doc['template'] === True) {
+if (DOCPX_INCLUDE_SOURCE && isset($doc['template']) && $doc['template'] === True) {
     echo $this->template('template.template', [
         'doc' => $doc
     ]);
@@ -42,4 +42,4 @@ if (isset($doc['template']) && $doc['template'] === True) {
 
 ?>
 
-Last updated on <?=date('m/d/y h:ia')?>
+Created on <?=date('m/d/y h:ia')?> using `Docpx <http://github.com/prggmr/docpx>`_

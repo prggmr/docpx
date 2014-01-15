@@ -27,6 +27,13 @@ if (!defined('DOCPX_DEBUG')) {
     define('DOCPX_DEBUG', false);
 }
 
+if (!defined('DOCPX_INCLUDE_SOURCE')) {
+    /**
+     * Include the source of files at the bottom of the document.
+     */
+    define('DOCPX_INCLUDE_SOURCE', true);
+}
+
 /**
  * Current version of phpdocpx
  */

@@ -29,7 +29,8 @@ class Docblock {
         'deprec', 'example', 'exception', 'global',
         'ignore', 'internal', 'name', 'package',
         'param', 'since', 'static', 'staticvar',
-        'subpackage', 'version', 'license', 'credit'
+        'subpackage', 'version', 'license', 'credit',
+        'since'
     );
 
     /**

@@ -1,11 +1,13 @@
 <?php
-if (function_exists('logger')) {} else {
 /**
- * Copyright 2013 Nickolas Whiting. All rights reserved.
+ * Copyright 2012 Nickolas Whiting
+ *
  * Use of this source code is governed by the Apache 2 license
  * that can be found in the LICENSE file.
+ *
+ * @author  Nickolas Whiting <nwhiting@xstudiosinc.com>
  */
-
+namespace {
 if (!defined('LOGGER_LOG_LEVEL')) {
     /**
      * LOGGER_LOG_LEVEL
@@ -13,6 +15,15 @@ if (!defined('LOGGER_LOG_LEVEL')) {
      * The default log level code to use when logging messages.
      */
     define('LOGGER_LOG_LEVEL', 1);
+}
+
+if (!defined('LOGGER_DATE_FORMAT')) {
+    /**
+     * LOGGER_DATE_FORMAT
+     *
+     * The default date format for log messages.
+     */
+    define('LOGGER_DATE_FORMAT', 'm-d-y H:i:s.u');
 }
 
 /**
@@ -27,10 +38,13 @@ if (!defined('LOGGER_LOG_LEVEL')) {
 function logger($name = null)
 {
     if (null === $name) {
-        return Logger::instance();
+        return Logger\Logger::instance();
     }
-    return Logger::instance()->get_logger($name);
+    return Logger\Logger::instance()->get_logger($name);
 }
+}
+
+namespace Logger {
 
 /**
  * Stupid simple logging utility for PHP based on Pythons logger.
@@ -82,6 +96,13 @@ class Logger {
     protected $_handlers = [];
 
     /**
+     * Array of loggers.
+     *
+     * @var
+     */
+    protected $_loggers = [];
+
+    /**
      * @var  object|null  Instanceof the singleton
      */
     protected static $_instance = null;
@@ -117,6 +138,23 @@ class Logger {
     public function add_handler(Handler $handler)
     {
         $this->_handlers[] = $handler;
+    }
+
+    /**
+     * Adds a global handler for all logs.
+     *
+     * @param  object  $handler  HJandler
+     *
+     * @return  void
+     */
+    public function add_global_handler(Handler $handler)
+    {
+        $this->_handlers[] = $handler;
+        if (count($this->_loggers) != 0) {
+            foreach ($this->_loggers as $_logger) {
+                $this->_loggers[$_logger]->add_handler($handler);
+            }
+        }
     }
 
     /**
@@ -195,16 +233,24 @@ class Logger {
     }
 
     /**
-     * Returns a logger.
+     * Returns a new logger.
      *
      * @param  string  $logger  Name of the logger.
      *
      * @return  object  Logger
      */
-    public function get_logger($logger)
+    public function get_logger($logger = null)
     {
+        if (null === $logger) {
+            return $this;
+        }
         if (!isset($this->_loggers[$logger])) {
             $this->_loggers[$logger] = new self();
+             if (count($this->_handlers) != 0) {
+                foreach ($this->_handlers as $_handler) {
+                    $this->_loggers[$logger]->add_handler($_handler);
+                }
+            }
         }
         return $this->_loggers[$logger];
     }
@@ -251,6 +297,7 @@ class Handler {
         $this->_formatter = $formatter;
         $this->_output = $output;
         $this->_level = $level;
+        $this->_make_writeable();
     }
 
     /**
@@ -265,7 +312,6 @@ class Handler {
     {
         if ($code >= $this->_level) {
             $message = $this->_formatter->format($code, $message);
-            $this->_make_writeable();
             fwrite($this->_output, $message);
         }
     }
@@ -352,8 +398,9 @@ class Formatter {
                 $str_code = 'CRITICAL';
                 break;
         }
+        $date = new \DateTime('now');
         return psprintf($this->_format, [
-            'date' => date('m-d-y H:i:s e'),
+            'date' => $date->format(LOGGER_DATE_FORMAT),
             'message' => $message,
             'code' => $code,
             'str_code' => $str_code
